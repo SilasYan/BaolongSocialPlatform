@@ -1,0 +1,35 @@
+server:
+  port: 8800
+  servlet:
+    context-path: /chat
+
+spring:
+  application:
+    name: bl-social-chat
+  profiles:
+    active: local
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${baolong.social.mysql.ip}:${baolong.social.mysql.port}/${baolong.social.mysql.dbname}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: ${baolong.social.mysql.username}
+    password: ${baolong.social.mysql.password}
+  data:
+    redis:
+      host: ${baolong.social.redis.host}
+      port: ${baolong.social.redis.port}
+      database: ${baolong.social.redis.database}
+      password: ${baolong.social.redis.password}
+      # 连接超时时间（单位: 毫秒, 30分钟）
+      timeout: 1800000
+      jedis:
+        pool:
+          enabled: true
+          min-idle: 10
+          max-idle: 100
+          max-active: 100
+          max-wait: -1
+
+baolong:
+  social:
+    websocket:
+      port: 8899
