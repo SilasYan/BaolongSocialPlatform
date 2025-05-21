@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 引入 application 配置文件中的属性 -->
+    <springProperty scope="context" name="LOG_FILE_PATH" source="logging.file.path"/>
+    <springProperty scope="context" name="LOG_FILE_NAME" source="spring.application.name"/>
+
+    <!--
+        文件日志输出格式，参数如下：
+        %-5level：级别从左显示五个字符宽度；
+        %d{yyyy-MM-dd HH:mm:ss.SSS}：表示日期；
+        %thread：表示线程；
+        %logger{36}：logger是class的全名，后面的数字代表限制最长的字符；
+        %M：当前执行日志的方法；
+        %L：行号
+        %m：日志信息；
+        %n：换行符
+    -->
+    <property name="file.log.pattern" value="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-50.50(%logger{50}):%M-%L %m%n"/>
+    <property name="console.log.pattern" value="%highlight([%level]) %d{yyyy-MM-dd HH:mm:ss.SSS} - %green([%thread]) %magenta(${PID:-}) %cyan(%-36.36(%logger{36}):%M[%L]) %m%n"/>
+
+    <!-- 配置文件的路径 -->
+    <property name="log.file.path" value="${LOG_FILE_PATH}"/>
+    <!-- 配置文件的名字 -->
+    <property name="log.file.name" value="${LOG_FILE_NAME}"/>
+
+    <!-- 控制台日志配置 -->
+    <appender name="CONSOLE_APPENDER" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${console.log.pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- INFO文件日志配置-->
+    <appender name="INFO_FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 日志文件位置 -->
+        <file>${log.file.path}/${log.file.name}_info.log</file>
+        <!-- 设置输出格式 -->
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${file.log.pattern}</pattern>
+        </encoder>
+        <!-- 是否追加 -->
+        <append>true</append>
+        <!-- 指定拆分规则 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 按照时间和压缩格式声明文件名 压缩格式gz 一般按天来拆分 %i为文件标号 -->
+            <fileNamePattern>${log.file.path}/${log.file.name}_info.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <!-- 文件最大大小 -->
+            <!--<maxFileSize>10MB</maxFileSize>-->
+            <!-- 文件保存天数 -->
+            <MaxHistory>90</MaxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- ERROR文件日志配置-->
+    <appender name="ERROR_FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 日志文件位置 -->
+        <file>${log.file.path}/${log.file.name}_error.log</file>
+        <!-- 设置输出格式 -->
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${file.log.pattern}</pattern>
+        </encoder>
+        <!-- 是否追加 -->
+        <append>true</append>
+        <!-- 指定拆分规则 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 按照时间和压缩格式声明文件名 压缩格式gz 一般按天来拆分 %i为文件标号 -->
+            <fileNamePattern>${log.file.path}/${log.file.name}_error.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <!-- 文件最大大小 -->
+            <!--<maxFileSize>10MB</maxFileSize>-->
+            <!-- 文件保存天数 -->
+            <MaxHistory>90</MaxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <root level="ALL">
+        <appender-ref ref="CONSOLE_APPENDER"/>
+    </root>
+    <!-- 日志记录器，level：配置日志级别 -->
+    <root level="INFO">
+        <appender-ref ref="INFO_FILE_APPENDER"/>
+        <appender-ref ref="ERROR_FILE_APPENDER"/>
+    </root>
+
+</configuration>

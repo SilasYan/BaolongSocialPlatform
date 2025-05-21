@@ -29,6 +29,35 @@ spring:
           max-active: 100
           max-wait: -1
 
+################ MyBatis-Plus ###############
+mybatis-plus:
+  # mapper 文件位置
+  mapper-locations: classpath:/mapper/**/*.xml
+  configuration:
+    # 开启驼峰命名
+    map-underscore-to-camel-case: true
+    # 日志配置
+    log-impl: ${baolong.log.mybatis.plus.log.impl}
+  # 全局配置
+  global-config:
+    # 是否开启启动打印的 LOGO
+    banner: false
+    db-config:
+      # 表名是否使用下划线命名
+      table-underline: true
+      # 全局逻辑删除的实体字段名
+      logic-delete-field: isDelete
+      # 逻辑已删除值（默认为 1）
+      logic-delete-value: 1
+      # 逻辑未删除值（默认为 0）
+      logic-not-delete-value: 0
+
+################ 日志 ###############
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: ${baolong.log.logging.file.path}
+
 baolong:
   social:
     websocket:

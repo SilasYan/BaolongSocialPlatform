@@ -24,6 +24,7 @@
         <mybatisplus.version>3.5.12</mybatisplus.version>
         <redisson.version>3.41.0</redisson.version>
         <netty.version>4.2.0.Final</netty.version>
+        <easycaptcha.version>1.6.2</easycaptcha.version>
         <jsoup.version>1.20.1</jsoup.version>
     </properties>
 
@@ -35,6 +36,18 @@
                 <version>${springboot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
             </dependency>
 
             <dependency>
@@ -61,23 +74,18 @@
                 <version>${netty.version}</version>
             </dependency>
 
+            <!-- 图形验证码: https://github.com/ele-admin/EasyCaptcha -->
             <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-                <version>${knife4j.version}</version>
+                <groupId>com.github.whvcse</groupId>
+                <artifactId>easy-captcha</artifactId>
+                <version>${easycaptcha.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+            <!-- 网页抓取: https://mvnrepository.com/artifact/org.jsoup/jsoup -->
             <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
-                <version>1.20.1</version>
+                <version>${jsoup.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
