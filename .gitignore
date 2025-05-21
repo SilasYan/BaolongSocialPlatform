@@ -39,3 +39,4 @@ build/
 
 ### CUSTOM ###
 application-prod.properties
+logs/

@@ -1,3 +1,8 @@
+baolong:
+  social:
+    websocket:
+      port: 8899
+
 server:
   port: 8800
   servlet:
@@ -28,6 +33,27 @@ spring:
           max-idle: 100
           max-active: 100
           max-wait: -1
+  ############### 邮箱配置 ###############
+  mail:
+    host: ${baolong.social.email.host}
+    port: ${baolong.social.email.port}
+    nickname: ${baolong.social.email.nickname}
+    username: ${baolong.social.email.username}
+    password: ${baolong.social.email.password}
+    protocol: ${baolong.social.email.protocol}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true
+          socketFactory:
+            port: ${spring.social.email.port}
+            class: javax.net.ssl.SSLSocketFactory
 
 ################ MyBatis-Plus ###############
 mybatis-plus:
@@ -57,8 +83,3 @@ logging:
   config: classpath:logback-spring.xml
   file:
     path: ${baolong.log.logging.file.path}
-
-baolong:
-  social:
-    websocket:
-      port: 8899
