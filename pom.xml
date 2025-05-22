@@ -10,8 +10,9 @@
 
     <packaging>pom</packaging>
     <modules>
-        <module>bl-social-common</module>
         <module>bl-social-chat</module>
+        <module>bl-social-tools</module>
+        <module>bl-social-repository</module>
     </modules>
 
     <properties>
@@ -19,17 +20,19 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springboot.version>3.4.5</springboot.version>
-        <hutool.version>5.8.38</hutool.version>
-        <knife4j.version>4.4.0</knife4j.version>
         <mybatisplus.version>3.5.12</mybatisplus.version>
         <redisson.version>3.41.0</redisson.version>
         <netty.version>4.2.0.Final</netty.version>
+        <satoken.version>1.42.0</satoken.version>
+        <hutool.version>5.8.38</hutool.version>
+        <knife4j.version>4.4.0</knife4j.version>
         <easycaptcha.version>1.6.2</easycaptcha.version>
         <jsoup.version>1.20.1</jsoup.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- Spring依赖 -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -38,40 +41,57 @@
                 <scope>import</scope>
             </dependency>
 
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-                <version>${knife4j.version}</version>
-            </dependency>
-
+            <!-- MyBatis-Plus -->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mybatisplus.version}</version>
             </dependency>
+            <!-- MyBatis-Plus分页插件 -->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-jsqlparser</artifactId>
                 <version>${mybatisplus.version}</version>
             </dependency>
 
+            <!-- Redisson分布式锁 -->
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>${redisson.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+            <!-- Netty: https://mvnrepository.com/artifact/io.netty/netty-all -->
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
                 <version>${netty.version}</version>
+            </dependency>
+
+            <!-- Sa-Token 权限认证 -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot3-starter</artifactId>
+                <version>${satoken.version}</version>
+            </dependency>
+            <!-- Sa-Token 整合 Redis （使用 jackson 序列化方式） -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-redis-jackson</artifactId>
+                <version>${satoken.version}</version>
+            </dependency>
+            <!-- Sa-Token 整合 jwt -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-jwt</artifactId>
+                <version>${satoken.version}</version>
+            </dependency>
+
+            <!-- Knife4j文档 -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
             </dependency>
 
             <!-- 图形验证码: https://github.com/ele-admin/EasyCaptcha -->
@@ -87,8 +107,23 @@
                 <artifactId>jsoup</artifactId>
                 <version>${jsoup.version}</version>
             </dependency>
+
+            <!-- HuTool工具库 -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>

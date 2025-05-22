@@ -17,7 +17,7 @@ import java.util.Date;
  * @author Silas Yan 2025-04-24 23:09
  */
 @Configuration
-@MapperScan(value = {"icu.baolong.social.**.mapper"})
+@MapperScan(value = {"icu.baolong.social.repository.**.mapper"})
 public class MyBatisPlusConfig implements MetaObjectHandler {
 
 	@Bean

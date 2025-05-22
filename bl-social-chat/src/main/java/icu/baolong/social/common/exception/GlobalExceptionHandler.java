@@ -1,5 +1,7 @@
 package icu.baolong.social.common.exception;
 
+import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.NotPermissionException;
 import icu.baolong.social.common.response.BaseResponse;
 import icu.baolong.social.common.response.RespCode;
 import icu.baolong.social.common.response.Result;
@@ -23,6 +25,18 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+	@ExceptionHandler(NotLoginException.class)
+	public BaseResponse<?> notLoginException(NotLoginException e) {
+		log.error("[用户未登录] {}", e.getMessage());
+		return Result.failed(RespCode.NOT_LOGIN);
+	}
+
+	@ExceptionHandler(NotPermissionException.class)
+	public BaseResponse<?> notPermissionExceptionHandler(NotPermissionException e) {
+		log.error("[用户无权限] {}", e.getMessage());
+		return Result.failed(RespCode.NOT_AUTH);
+	}
+
 	/**
 	 * 请求方式错误处理器
 	 */
@@ -32,9 +46,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 																		 HttpStatusCode status, WebRequest request) {
 		log.error("[请求方式错误] {}", ex.getMessage());
 		return new ResponseEntity<>(
-				Result.failed(RespCode.ERROR_REQUEST_METHOD.getCode()
-						, RespCode.ERROR_REQUEST_METHOD.getMessage() + " [" + ex.getMessage() + "]"
-				)
+				Result.failed(RespCode.REQUEST_METHOD_ERROR.getCode()
+						, RespCode.REQUEST_METHOD_ERROR.getMessage()
+						, ex.getMessage())
 				, HttpStatus.METHOD_NOT_ALLOWED
 		);
 	}

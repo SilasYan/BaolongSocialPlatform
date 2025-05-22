@@ -27,6 +27,10 @@ public class Result {
 		return new BaseResponse<>(code, message);
 	}
 
+	public static <T> BaseResponse<T> failed(int code, String message, T data) {
+		return new BaseResponse<>(code, message, data);
+	}
+
 	public static BaseResponse<?> failed(RespCode respCode) {
 		return new BaseResponse<>(respCode);
 	}

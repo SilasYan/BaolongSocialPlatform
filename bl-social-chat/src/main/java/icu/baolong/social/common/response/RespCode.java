@@ -17,32 +17,27 @@ public enum RespCode {
 	/**
 	 * 失败
 	 */
-	FAILED(400, "FAILED"),
-	/**
-	 * 系统异常
-	 */
-	SYSTEM_ERROR(500, "系统异常"),
-
-	/**
-	 * 未登录
-	 */
-	NOT_LOGIN(401, "未登录"),
-	/**
-	 * 无权限
-	 */
-	NOT_AUTH(403, "无权限"),
-	/**
-	 * 数据错误
-	 */
-	ERROR_DATA(400, "数据错误"),
-	/**
-	 * 禁止访问
-	 */
-	ERROR_FORBIDDEN(402, "禁止访问"),
+	FAILED(400, "失败啦~"),
 	/**
 	 * 请求方式错误
 	 */
-	ERROR_REQUEST_METHOD(405, "请求方式错误"),
+	REQUEST_METHOD_ERROR(405, "请求方式错误~"),
+	/**
+	 * 系统异常
+	 */
+	SYSTEM_ERROR(500, "系统开小差中, 请稍后重试~~"),
+	/**
+	 * 未登录
+	 */
+	NOT_LOGIN(401, "还未登录呢~"),
+	/**
+	 * 无权限
+	 */
+	NOT_AUTH(403, "没有权限捏~"),
+	/**
+	 * 请求限流
+	 */
+	REQUEST_LIMIT(555, "访问太快啦~"),
 	;
 
 	/**
