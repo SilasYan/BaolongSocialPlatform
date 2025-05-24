@@ -27,6 +27,8 @@
         <hutool.version>5.8.38</hutool.version>
         <knife4j.version>4.4.0</knife4j.version>
         <easycaptcha.version>1.6.2</easycaptcha.version>
+        <weixin.version>4.7.0</weixin.version>
+        <caffeine.version>3.2.0</caffeine.version>
         <jsoup.version>1.20.1</jsoup.version>
     </properties>
 
@@ -99,6 +101,13 @@
                 <groupId>com.github.whvcse</groupId>
                 <artifactId>easy-captcha</artifactId>
                 <version>${easycaptcha.version}</version>
+            </dependency>
+
+            <!-- 别人开发的微信公众号SDK: https://mvnrepository.com/artifact/com.github.binarywang/weixin-java-mp -->
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-mp</artifactId>
+                <version>${weixin.version}</version>
             </dependency>
 
             <!-- 网页抓取: https://mvnrepository.com/artifact/org.jsoup/jsoup -->

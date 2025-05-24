@@ -81,6 +81,26 @@ mybatis-plus:
       # 逻辑未删除值（默认为 0）
       logic-not-delete-value: 0
 
+################ 微信公众号配置 ###############
+wechat:
+  mp:
+    useRedis: false
+    redisConfig:
+      host: 127.0.0.1
+      port: 6379
+    callback: ${baolong.social.wechat.mp.callback}
+    # 可以配置多个
+    configs:
+      # 公众号的appid
+      - appId: ${baolong.social.wechat.mp.appId}
+        # 公众号的appsecret
+        secret: ${baolong.social.wechat.mp.appSecret}
+        # 接口配置里的Token值
+        token: ${baolong.social.wechat.mp.token}
+        # 接口配置里的EncodingAESKey值
+        aesKey: ${baolong.social.wechat.mp.aesKey}
+
+
 ################ Sa-Token 配置 ###############
 sa-token:
   # token 名称（同时也是 cookie 名称）

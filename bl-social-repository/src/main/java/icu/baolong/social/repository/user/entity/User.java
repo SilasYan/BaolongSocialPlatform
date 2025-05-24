@@ -14,8 +14,8 @@ import java.util.Date;
 /**
  * 用户表
  *
- * @TableName user
  * @author Baolong
+ * @TableName user
  */
 @Accessors(chain = true)
 @Data
@@ -28,7 +28,7 @@ public class User implements Serializable {
 	/**
 	 * 用户ID
 	 */
-	@TableId(type = IdType.AUTO)
+	@TableId(type = IdType.ASSIGN_ID)
 	private Long id;
 
 	/**
@@ -52,7 +52,7 @@ public class User implements Serializable {
 	private String userPhone;
 
 	/**
-	 * 用户昵称
+	 * 用户名称
 	 */
 	private String userName;
 
@@ -65,6 +65,11 @@ public class User implements Serializable {
 	 * 用户简介
 	 */
 	private String userProfile;
+
+	/**
+	 * 用户性别（0-男, 1-女, 2-无）
+	 */
+	private Integer userSex;
 
 	/**
 	 * 微信OpenId

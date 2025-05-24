@@ -1,4 +1,4 @@
-package icu.baolong.social.websocket.entity.response;
+package icu.baolong.social.websocket.domain.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;

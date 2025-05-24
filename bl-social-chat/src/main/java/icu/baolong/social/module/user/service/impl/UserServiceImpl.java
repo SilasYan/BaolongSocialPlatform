@@ -14,7 +14,9 @@ import icu.baolong.social.common.exception.ThrowUtil;
 import icu.baolong.social.manager.EmailManager;
 import icu.baolong.social.common.response.RespCode;
 import icu.baolong.social.common.utils.RedisUtil;
+import icu.baolong.social.module.user.adapter.UserAdapter;
 import icu.baolong.social.module.user.converter.UserConverter;
+import icu.baolong.social.module.user.domain.enums.UserSexEnum;
 import icu.baolong.social.module.user.domain.request.UserLoginReq;
 import icu.baolong.social.module.user.domain.response.UserInfoResp;
 import icu.baolong.social.module.user.domain.enums.UserDisabledEnum;
@@ -57,8 +59,8 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public EmailCodeResp sendEmailCode(String userEmail) {
-		// 校验当前邮箱是否存在, 存在抛异常
-		boolean exists = userDao.exists(userDao.lambdaQueryWrapper().eq(User::getUserEmail, userEmail));
+		// 根据邮箱判断用户是否存在, 存在抛异常
+		boolean exists = userDao.existsUserByUserEmail(userEmail);
 		ThrowUtil.tif(exists, RespCode.FAILED, "邮箱已被注册");
 		// 发送邮箱验证码, 这里是异步发送的
 		String code = RandomUtil.randomNumbers(6);
@@ -86,14 +88,11 @@ public class UserServiceImpl implements UserService {
 		redisUtil.delete(codeKey);
 		// 校验当前邮箱是否存在, 存在抛异常
 		String userEmail = userRegisterReq.getUserEmail();
-		boolean exists = userDao.exists(userDao.lambdaQueryWrapper().eq(User::getUserEmail, userEmail));
+		boolean exists = userDao.existsUserByUserEmail(userEmail);
 		ThrowUtil.tif(exists, RespCode.FAILED, "邮箱已被注册");
 		// 构建用户对象
 		String password = "123456";
-		User user = new User()
-				.setUserEmail(userEmail)
-				.setUserPassword(this.encryptPassword("baolong", password));
-		this.fillUserDefaultField(user);
+		User user = UserAdapter.buildDefaultUser(userEmail, this.encryptPassword("baolong", password));
 		// 保存用户信息
 		boolean result = userDao.save(user);
 		ThrowUtil.tif(!result, "注册失败");
@@ -127,9 +126,14 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public String userLogin(UserLoginReq userLoginReq) {
-		String account = userLoginReq.getAccount();
-		User user = userDao.getOne(userDao.lambdaQueryWrapper()
-				.eq(User::getUserAccount, account).or(qw -> qw.eq(User::getUserEmail, account)));
+		String wxOpenId = userLoginReq.getWxOpenId();
+		User user = null;
+		if (StrUtil.isBlank(wxOpenId)) {
+			String account = userLoginReq.getAccount();
+			user = userDao.getUserByAccount(account);
+		} else {
+			user = this.getUserByWxOpenId(wxOpenId);
+		}
 		if (user == null) {
 			log.error("[用户登录] 登录失败! {}", TextConstant.ERROR_USER_OR_PASSWORD);
 			throw new BusinessException(TextConstant.ERROR_USER_OR_PASSWORD);
@@ -138,9 +142,12 @@ public class UserServiceImpl implements UserService {
 			log.error("[用户登录] 登录失败! {}", TextConstant.ERROR_USER_STATUS);
 			throw new BusinessException(TextConstant.ERROR_USER_STATUS);
 		}
-		if (!user.getUserPassword().equals(this.encryptPassword("baolong", userLoginReq.getUserPassword()))) {
-			log.error("[用户登录] 登录失败! {}", TextConstant.ERROR_USER_OR_PASSWORD);
-			throw new BusinessException(TextConstant.ERROR_USER_OR_PASSWORD);
+		// 只有通过账号/邮箱+密码登录, 才校验密码
+		if (StrUtil.isBlank(wxOpenId)) {
+			if (!user.getUserPassword().equals(this.encryptPassword("baolong", userLoginReq.getUserPassword()))) {
+				log.error("[用户登录] 登录失败! {}", TextConstant.ERROR_USER_OR_PASSWORD);
+				throw new BusinessException(TextConstant.ERROR_USER_OR_PASSWORD);
+			}
 		}
 		// 记录登录态, 并把当前用户信息放入到redis中, 7天过期
 		Long userId = user.getId();
@@ -149,6 +156,19 @@ public class UserServiceImpl implements UserService {
 		// 异步记录日志
 		userLoginLogService.recordLoginLog(userId, new Date(), ServletUtil.getIp(), ServletUtil.getHeader("User-Agent"));
 		return StpUtil.getTokenValue();
+	}
+
+	/**
+	 * 用户登录（扫码登录）
+	 *
+	 * @param wxOpenId 微信OpenId
+	 * @return Token
+	 */
+	@Override
+	public String userLoginByScanQrCode(String wxOpenId) {
+		UserLoginReq userLoginReq = new UserLoginReq();
+		userLoginReq.setWxOpenId(wxOpenId);
+		return this.userLogin(userLoginReq);
 	}
 
 	/**
@@ -178,6 +198,77 @@ public class UserServiceImpl implements UserService {
 		return UserConverter.from(UserInfoResp.class, user);
 	}
 
+	/**
+	 * 根据用户ID获取用户信息
+	 *
+	 * @param userId 用户ID
+	 * @return 用户对象
+	 */
+	@Override
+	public User getUserByUserId(Long userId) {
+		return userDao.getOne(userDao.lambdaQueryWrapper().eq(User::getId, userId));
+	}
+
+	/**
+	 * 根据微信OpenId获取用户信息
+	 *
+	 * @param wxOpenId 微信OpenId
+	 * @return 用户对象
+	 */
+	@Override
+	public User getUserByWxOpenId(String wxOpenId) {
+		return userDao.getOne(userDao.lambdaQueryWrapper().eq(User::getWxOpenId, wxOpenId));
+	}
+
+	/**
+	 * 根据微信OpenId注册用户
+	 *
+	 * @param openId 微信OpenId
+	 */
+	@Override
+	public void userRegisterByWxOpenId(String openId) {
+		String password = "123456";
+		User user = UserAdapter.buildUserByWxOpenId(openId, this.encryptPassword("baolong", password));
+		userDao.save(user);
+		// TODO 用户注册后的事件
+	}
+
+	/**
+	 * 微信授权登录
+	 *
+	 * @param wxOpenId   微信OpenId
+	 * @param userName   微信用户昵称
+	 * @param userAvatar 微信头像
+	 * @param userSex    微信性别
+	 * @return 用户对象
+	 */
+	@Override
+	public User userUpdateByWxAuthorize(String wxOpenId, String userName, String userAvatar, Integer userSex) {
+		User user = this.getUserByWxOpenId(wxOpenId);
+		boolean update = false;
+		if (StrUtil.isBlank(user.getUserAccount())) {
+			String account = "user." + RandomUtil.randomString(8).toUpperCase();
+			user.setUserAccount(account);
+			update = true;
+		}
+		if (StrUtil.isBlank(user.getUserName())) {
+			user.setUserName(userName);
+			update = true;
+		}
+		if (StrUtil.isBlank(user.getUserAvatar())) {
+			user.setUserAvatar(userAvatar);
+			update = true;
+		}
+		if (UserSexEnum.OTHER.getKey().equals(user.getUserSex())) {
+			user.setUserSex(userSex);
+			update = true;
+		}
+		if (update) {
+			userDao.updateById(user);
+		}
+		return user;
+	}
+
 	// region 私有方法
 
 	/**
@@ -189,20 +280,6 @@ public class UserServiceImpl implements UserService {
 	 */
 	private String encryptPassword(String salt, String originPassword) {
 		return DigestUtils.md5DigestAsHex((salt + originPassword).getBytes());
-	}
-
-	/**
-	 * 填充用户默认字段
-	 *
-	 * @param user 用户对象
-	 */
-	private void fillUserDefaultField(User user) {
-		String random = RandomUtil.randomString(8).toUpperCase();
-		user.setUserAccount(user.getUserEmail())
-				.setUserName("user." + random)
-				.setUserAvatar("默认头像...")
-				.setUserProfile("用户暂未填写个人简介~")
-				.setShareCode(random);
 	}
 
 	// endregion 私有方法

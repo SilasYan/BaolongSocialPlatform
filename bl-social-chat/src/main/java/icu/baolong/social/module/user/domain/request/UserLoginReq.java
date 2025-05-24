@@ -17,6 +17,9 @@ public class UserLoginReq implements Serializable {
 	@Schema(description = "用户账号/用户邮箱")
 	private String account;
 
+	@Schema(description = "微信OpenId")
+	private String wxOpenId;
+
 	@Schema(description = "密码", requiredMode = Schema.RequiredMode.REQUIRED)
 	private String userPassword;
 

@@ -5,6 +5,7 @@ import icu.baolong.social.module.user.domain.request.UserRegisterReq;
 import icu.baolong.social.module.user.domain.response.EmailCodeResp;
 import icu.baolong.social.module.user.domain.response.GraphicCodeResp;
 import icu.baolong.social.module.user.domain.response.UserInfoResp;
+import icu.baolong.social.repository.user.entity.User;
 
 /**
  * 用户表 (user) - 服务接口
@@ -45,6 +46,14 @@ public interface UserService {
 	String userLogin(UserLoginReq userLoginReq);
 
 	/**
+	 * 用户登录（扫码登录）
+	 *
+	 * @param wxOpenId 微信OpenId
+	 * @return Token
+	 */
+	String userLoginByScanQrCode(String wxOpenId);
+
+	/**
 	 * 用户登出
 	 *
 	 * @return 是否成功
@@ -57,4 +66,38 @@ public interface UserService {
 	 * @return 用户信息响应
 	 */
 	UserInfoResp getUserInfoByLogin();
+
+	/**
+	 * 根据用户ID获取用户信息
+	 *
+	 * @param userId 用户ID
+	 * @return 用户对象
+	 */
+	User getUserByUserId(Long userId);
+
+	/**
+	 * 根据微信OpenId获取用户信息
+	 *
+	 * @param openId 微信OpenId
+	 * @return 用户对象
+	 */
+	User getUserByWxOpenId(String openId);
+
+	/**
+	 * 根据微信OpenId注册用户
+	 *
+	 * @param openId 微信OpenId
+	 */
+	void userRegisterByWxOpenId(String openId);
+
+	/**
+	 * 用户微信授权更新信息
+	 *
+	 * @param wxOpenId   微信OpenId
+	 * @param userName   微信用户昵称
+	 * @param userAvatar 微信头像
+	 * @param userSex    微信性别
+	 * @return 用户对象
+	 */
+	User userUpdateByWxAuthorize(String wxOpenId, String userName, String userAvatar, Integer userSex);
 }

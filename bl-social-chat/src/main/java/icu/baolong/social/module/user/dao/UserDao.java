@@ -106,4 +106,25 @@ public class UserDao extends ServiceImpl<UserMapper, User> {
 		}
 		return lambdaQueryWrapper;
 	}
+
+	/**
+	 * 判断用户是否存在
+	 *
+	 * @param userEmail 用户邮箱
+	 * @return 是否存在 true：存在 false：不存在
+	 */
+	public boolean existsUserByUserEmail(String userEmail) {
+		return this.exists(new LambdaQueryWrapper<User>().eq(User::getUserEmail, userEmail));
+	}
+
+	/**
+	 * 根据账户获取用户信息
+	 *
+	 * @param account 账户: 账号或邮箱
+	 * @return 用户信息
+	 */
+	public User getUserByAccount(String account) {
+		return this.getOne(new LambdaQueryWrapper<User>()
+				.eq(User::getUserAccount, account).or(qw -> qw.eq(User::getUserEmail, account)));
+	}
 }

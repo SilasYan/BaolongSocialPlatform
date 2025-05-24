@@ -1,22 +1,23 @@
-package icu.baolong.social.websocket.entity.request;
+package icu.baolong.social.websocket.domain.base;
 
-import icu.baolong.social.websocket.enums.WebSocketReqTypeEnum;
+import icu.baolong.social.websocket.domain.enums.WSReqTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * WebSocket 请求类
+ * WebSocket请求类
  *
  * @author Silas Yan 2025-05-20 22:02
  */
 @Data
-public class WebSocketReq {
+public class WSReq {
 
 	/**
-	 * @see WebSocketReqTypeEnum
+	 * @see WSReqTypeEnum
 	 */
 	@Schema(description = "响应消息类型")
 	private Integer type;
+
 	@Schema(description = "请求数据")
 	private String data;
 }

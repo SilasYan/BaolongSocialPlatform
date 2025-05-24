@@ -1,4 +1,4 @@
-package icu.baolong.social.websocket.enums;
+package icu.baolong.social.websocket.domain.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
  */
 @Getter
 @AllArgsConstructor
-public enum WebSocketReqTypeEnum {
+public enum WSReqTypeEnum {
 
 	LOGIN_CAPTCHA(0, "请求图形验证码"),
-	LOGIN_QR_CODE(1, "请求登录二维码"),
+	LOGIN_WX_QR_CODE(1, "微信扫码登录"),
 	HEARTBEAT(2, "心跳包"),
 	AUTHORIZE(3, "登录认证"),
 	;
@@ -27,13 +27,13 @@ public enum WebSocketReqTypeEnum {
 
 	private final String label;
 
-	private static final Map<Integer, WebSocketReqTypeEnum> CACHE;
+	private static final Map<Integer, WSReqTypeEnum> CACHE;
 
 	static {
-		CACHE = Arrays.stream(WebSocketReqTypeEnum.values()).collect(Collectors.toMap(WebSocketReqTypeEnum::getKey, Function.identity()));
+		CACHE = Arrays.stream(WSReqTypeEnum.values()).collect(Collectors.toMap(WSReqTypeEnum::getKey, Function.identity()));
 	}
 
-	public static WebSocketReqTypeEnum of(Integer type) {
+	public static WSReqTypeEnum of(Integer type) {
 		return CACHE.get(type);
 	}
 }

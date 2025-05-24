@@ -11,6 +11,7 @@
             <result property="userName" column="user_name" jdbcType="VARCHAR"/>
             <result property="userAvatar" column="user_avatar" jdbcType="VARCHAR"/>
             <result property="userProfile" column="user_profile" jdbcType="VARCHAR"/>
+            <result property="userSex" column="user_sex" jdbcType="TINYINT"/>
             <result property="wxOpenId" column="wx_open_id" jdbcType="VARCHAR"/>
             <result property="shareCode" column="share_code" jdbcType="VARCHAR"/>
             <result property="isDisabled" column="is_disabled" jdbcType="TINYINT"/>
@@ -23,7 +24,7 @@
     <sql id="Base_Column_List">
         id,user_account,user_password,
         user_email,user_phone,user_name,
-        user_avatar,user_profile,wx_open_id,
+        user_avatar,user_profile,user_sex,wx_open_id,
         share_code,is_disabled,is_delete,
         edit_time,create_time,update_time
     </sql>

@@ -1,6 +1,7 @@
-package icu.baolong.social.websocket.entity.response;
+package icu.baolong.social.websocket.domain.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serial;
@@ -11,6 +12,7 @@ import java.io.Serializable;
  *
  * @author Silas Yan 2025-05-20 22:18
  */
+@Builder
 @Data
 public class QRCodeResp implements Serializable {
 	@Serial

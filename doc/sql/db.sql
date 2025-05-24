@@ -7,13 +7,14 @@ DROP TABLE IF EXISTS user;
 CREATE TABLE user
 (
     id            BIGINT(20) UNSIGNED                                           NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-    user_account  VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '账号',
-    user_password VARCHAR(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
-    user_email    VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '用户邮箱',
+    user_account  VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NULL     DEFAULT NULL COMMENT '账号',
+    user_password VARCHAR(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL     DEFAULT NULL COMMENT '密码',
+    user_email    VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NULL     DEFAULT NULL COMMENT '用户邮箱',
     user_phone    VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NULL     DEFAULT NULL COMMENT '用户手机号',
-    user_name     VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL     DEFAULT NULL COMMENT '用户昵称',
+    user_name     VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL     DEFAULT NULL COMMENT '用户名称',
     user_avatar   VARCHAR(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL     DEFAULT NULL COMMENT '用户头像',
     user_profile  VARCHAR(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL     DEFAULT NULL COMMENT '用户简介',
+    user_sex      TINYINT                                                       NULL     DEFAULT NULL COMMENT '用户性别（0-男, 1-女, 2-无）',
     wx_open_id    VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NULL     DEFAULT NULL COMMENT '微信OpenId',
     share_code    VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NULL     DEFAULT NULL COMMENT '分享码',
     is_disabled   TINYINT(4)                                                    NOT NULL DEFAULT 0 COMMENT '是否禁用（0-正常, 1-禁用）',

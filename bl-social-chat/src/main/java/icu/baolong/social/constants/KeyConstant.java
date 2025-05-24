@@ -21,4 +21,14 @@ public interface KeyConstant {
 	 * 用户信息 KEY 前缀
 	 */
 	String PREFIX_USER_INFO = "USER_INFO:%s";
+
+	/**
+	 * 微信场景值 KEY
+	 */
+	String KEY_WX_SCENE_ID = "wx_scene_id";
+
+	/**
+	 * 微信 openId 和场景值 KEY
+	 */
+	String PREFIX_WX_OPENID_SCENE = "wx_openid_scene:%s";
 }

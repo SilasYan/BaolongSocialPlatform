@@ -1,5 +1,6 @@
 package icu.baolong.social.module.user.service.impl;
 
+import icu.baolong.social.common.thread.ThreadPoolConfig;
 import icu.baolong.social.module.user.dao.UserLoginLogDao;
 import icu.baolong.social.module.user.service.UserLoginLogService;
 import icu.baolong.social.repository.user.entity.UserLoginLog;
@@ -30,7 +31,7 @@ public class UserLoginLogServiceImpl implements UserLoginLogService {
 	 * @param ip     登录IP
 	 * @param header 登录头
 	 */
-	@Async(value = "logThreadPool")
+	@Async(ThreadPoolConfig.COMMON_EXECUTOR)
 	@Override
 	public void recordLoginLog(Long userId, Date date, String ip, String header) {
 		UserLoginLog userLoginLog = new UserLoginLog()

@@ -1,5 +1,6 @@
 package icu.baolong.social.manager;
 
+import icu.baolong.social.common.thread.ThreadPoolConfig;
 import icu.baolong.social.common.exception.BusinessException;
 import icu.baolong.social.common.response.RespCode;
 import icu.baolong.social.common.utils.EmailUtil;
@@ -40,7 +41,7 @@ public class EmailManager {
 	 * @param subject   主题
 	 * @param code      验证码
 	 */
-	@Async(value = "emailThreadPool")
+	@Async(ThreadPoolConfig.EMAIL_EXECUTOR)
 	public void sendEmailAsEmailCode(String recipient, String subject, String code) {
 		log.info("[邮箱处理服务] 给 {} 发送验证码 {}", recipient, code);
 		try {
@@ -70,7 +71,7 @@ public class EmailManager {
 	 * @param subject   主题
 	 * @param password  密码
 	 */
-	@Async(value = "emailThreadPool")
+	@Async(ThreadPoolConfig.EMAIL_EXECUTOR)
 	public void sendEmailAsRegisterSuccess(String recipient, String subject, String password) {
 		try {
 			// 创建MIME消息
