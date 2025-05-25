@@ -14,23 +14,20 @@ import java.io.Serializable;
 @Data
 public class UserUpdateReq implements Serializable {
 
-	@Schema(description = "用户ID", requiredMode = Schema.RequiredMode.REQUIRED)
-	private Long userId;
-
-	@Schema(description = "账号")
-	private String userAccount;
-
-	@Schema(description = "用户手机号")
-	private String userPhone;
-
-	@Schema(description = "用户昵称")
-	private String userName;
-
 	@Schema(description = "用户头像")
 	private String userAvatar;
 
 	@Schema(description = "用户简介")
 	private String userProfile;
+
+	@Schema(description = "用户性别（0-男, 1-女, 2-无）")
+	private Integer userSex;
+
+	@Schema(description = "徽章ID")
+	private Long badgeId;
+
+	@Schema(description = "头像框ID")
+	private Long avatarFrameId;
 
 	@Serial
 	private static final long serialVersionUID = 1L;

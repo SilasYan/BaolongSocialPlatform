@@ -20,8 +20,6 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfoResp implements Serializable {
-	@Serial
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 用户ID
@@ -73,4 +71,7 @@ public class UserInfoResp implements Serializable {
 	 */
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date editTime;
+
+	@Serial
+	private static final long serialVersionUID = 1L;
 }

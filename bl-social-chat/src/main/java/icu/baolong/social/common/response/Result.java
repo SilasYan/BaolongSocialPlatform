@@ -11,6 +11,10 @@ public class Result {
 		return new BaseResponse<>(RespCode.SUCCESS.getCode(), RespCode.SUCCESS.getMessage());
 	}
 
+	public static <T> BaseResponse<T> success(String message) {
+		return new BaseResponse<>(RespCode.SUCCESS.getCode(), message, null);
+	}
+
 	public static <T> BaseResponse<T> success(T data) {
 		return new BaseResponse<>(RespCode.SUCCESS, data);
 	}

@@ -1,5 +1,6 @@
 package icu.baolong.social.repository.user.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -18,12 +19,9 @@ import java.util.Date;
  * @TableName user
  */
 @Accessors(chain = true)
-@Data
 @TableName(value = "user")
+@Data
 public class User implements Serializable {
-	@Serial
-	@TableField(exist = false)
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 用户ID
@@ -72,6 +70,11 @@ public class User implements Serializable {
 	private Integer userSex;
 
 	/**
+	 * 用户积分
+	 */
+	private Long userPoints;
+
+	/**
 	 * 微信OpenId
 	 */
 	private String wxOpenId;
@@ -80,6 +83,36 @@ public class User implements Serializable {
 	 * 分享码
 	 */
 	private String shareCode;
+
+	/**
+	 * 徽章ID
+	 */
+	private Long badgeId;
+
+	/**
+	 * 头像框ID
+	 */
+	private Long avatarFrameId;
+
+	/**
+	 * 首次登录时间
+	 */
+	private Date firstLoginTime;
+
+	/**
+	 * 最后登录时间
+	 */
+	private Date lastLoginTime;
+
+	/**
+	 * 连续签到天数
+	 */
+	private Integer checkInDays;
+
+	/**
+	 * 最后签到时间
+	 */
+	private Date lastCheckInTime;
 
 	/**
 	 * 是否禁用（0-正常, 1-禁用）
@@ -94,6 +127,7 @@ public class User implements Serializable {
 	/**
 	 * 编辑时间
 	 */
+	@TableField(value = "edit_time", fill = FieldFill.UPDATE)
 	private Date editTime;
 
 	/**
@@ -105,4 +139,8 @@ public class User implements Serializable {
 	 * 更新时间
 	 */
 	private Date updateTime;
+
+	@Serial
+	@TableField(exist = false)
+	private static final long serialVersionUID = 1L;
 }

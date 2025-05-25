@@ -6,33 +6,41 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
+import icu.baolong.social.cache.ItemsCache;
+import icu.baolong.social.common.converter.ConvertUtils;
 import icu.baolong.social.common.utils.ServletUtil;
 import icu.baolong.social.constants.KeyConstant;
 import icu.baolong.social.constants.TextConstant;
 import icu.baolong.social.common.exception.BusinessException;
 import icu.baolong.social.common.exception.ThrowUtil;
-import icu.baolong.social.manager.EmailManager;
+import icu.baolong.social.manager.email.EmailManager;
 import icu.baolong.social.common.response.RespCode;
 import icu.baolong.social.common.utils.RedisUtil;
 import icu.baolong.social.module.user.adapter.UserAdapter;
-import icu.baolong.social.module.user.converter.UserConverter;
+import icu.baolong.social.module.items.domain.enums.ItemTypeEnum;
+import icu.baolong.social.module.user.dao.UserBackpackDao;
 import icu.baolong.social.module.user.domain.enums.UserSexEnum;
 import icu.baolong.social.module.user.domain.request.UserLoginReq;
+import icu.baolong.social.module.user.domain.response.UserBadgeResp;
 import icu.baolong.social.module.user.domain.response.UserInfoResp;
 import icu.baolong.social.module.user.domain.enums.UserDisabledEnum;
 import icu.baolong.social.module.user.service.UserLoginLogService;
+import icu.baolong.social.repository.items.entity.Items;
 import icu.baolong.social.repository.user.entity.User;
 import icu.baolong.social.module.user.dao.UserDao;
 import icu.baolong.social.module.user.domain.request.UserRegisterReq;
 import icu.baolong.social.module.user.domain.response.EmailCodeResp;
 import icu.baolong.social.module.user.domain.response.GraphicCodeResp;
 import icu.baolong.social.module.user.service.UserService;
+import icu.baolong.social.repository.user.entity.UserBackpack;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.DigestUtils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -50,6 +58,9 @@ public class UserServiceImpl implements UserService {
 	private final UserDao userDao;
 	private final EmailManager emailManager;
 	private final UserLoginLogService userLoginLogService;
+	private final UserBackpackDao userBackpackDao;
+	private final ItemsCache itemsCache;
+	private final TransactionTemplate transactionTemplate;
 
 	/**
 	 * 发送邮箱验证码
@@ -195,7 +206,7 @@ public class UserServiceImpl implements UserService {
 		Long userId = StpUtil.getLoginIdAsLong();
 		User user = userDao.getById(userId);
 		ThrowUtil.tif(ObjectUtil.isNull(user), "用户不存在");
-		return UserConverter.from(UserInfoResp.class, user);
+		return ConvertUtils.from(UserInfoResp.class, user, "userId");
 	}
 
 	/**
@@ -218,6 +229,17 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserByWxOpenId(String wxOpenId) {
 		return userDao.getOne(userDao.lambdaQueryWrapper().eq(User::getWxOpenId, wxOpenId));
+	}
+
+	/**
+	 * 根据用户名称获取用户信息
+	 *
+	 * @param userName 用户名称
+	 * @return 用户对象
+	 */
+	@Override
+	public User getUserByUserName(String userName) {
+		return userDao.getOne(userDao.lambdaQueryWrapper().eq(User::getUserName, userName));
 	}
 
 	/**
@@ -267,6 +289,72 @@ public class UserServiceImpl implements UserService {
 			userDao.updateById(user);
 		}
 		return user;
+	}
+
+	/**
+	 * 修改用户名称
+	 *
+	 * @param userName 用户名称
+	 */
+	@Override
+	public void modifyUserName(String userName) {
+		long userId = StpUtil.getLoginIdAsLong();
+		// TODO 敏感词过滤
+		// 先判断用户名称是否存在
+		User user = this.getUserByUserName(userName);
+		ThrowUtil.tif(ObjectUtil.isNotNull(user), "名称已被占用啦~");
+		// 获取是否有改名卡
+		Items items = itemsCache.getItemsListByType(ItemTypeEnum.NAME_CHANGE_CARD.getKey()).getFirst();
+		UserBackpack userBackpack = userBackpackDao.getOneValidNameChangeCard(userId, items.getId());
+		ThrowUtil.tif(ObjectUtil.isNull(userBackpack), "暂时没有改名卡, 请联系管理员获取~");
+		// 操作数据库, 使用事务
+		transactionTemplate.execute(status -> {
+			// 把当前的改名卡进行使用
+			boolean result = userBackpackDao.useBackpackItem(userBackpack.getId());
+			if (result) {
+				// 修改用户名称
+				result = userDao.updateUserNameById(userId, userName);
+			}
+			ThrowUtil.tif(!result, "改名失败, 请联系管理员~");
+			return true;
+		});
+	}
+
+	/**
+	 * 获取徽章列表
+	 *
+	 * @return 徽章列表
+	 */
+	@Override
+	public List<UserBadgeResp> getBadgeList() {
+		long userId = StpUtil.getLoginIdAsLong();
+		// 获取所有徽章
+		List<Items> badgeList = itemsCache.getItemsListByType(ItemTypeEnum.BADGE.getKey());
+		// 获取当前用户徽章
+		List<UserBackpack> userBackpacks = userBackpackDao.getBadgeListByUserIdAndItemIds(userId, badgeList.stream().map(Items::getId).toList());
+		// 获取当前用户佩戴的徽章
+		User user = this.getUserByUserId(userId);
+		return UserAdapter.buildUserBadgeRespList(user, badgeList, userBackpacks);
+	}
+
+	/**
+	 * 修改用户徽章
+	 *
+	 * @param badgeId 徽章ID
+	 */
+	@Override
+	public void modifyUserBadge(Long badgeId) {
+		long userId = StpUtil.getLoginIdAsLong();
+		// 查询当前的物品ID是否是徽章
+		Items items = itemsCache.getItemsById(badgeId);
+		ThrowUtil.tif(ObjectUtil.isNull(items), "徽章不存在哦~");
+		ThrowUtil.tif(!ItemTypeEnum.BADGE.getKey().equals(items.getItemType()), "徽章无效~");
+		// 获取是否获得了该徽章
+		UserBackpack userBackpack = userBackpackDao.getBadgeByUserIdAndItemId(userId, badgeId);
+		ThrowUtil.tif(ObjectUtil.isNull(userBackpack), "您还没有获得该徽章哦~");
+		// 佩戴徽章
+		boolean result = userDao.updateBadgeIdById(userId, badgeId);
+		ThrowUtil.tif(!result, "佩戴徽章失败, 请联系管理员~");
 	}
 
 	// region 私有方法

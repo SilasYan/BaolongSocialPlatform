@@ -1,7 +1,8 @@
 package icu.baolong.social.controller;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import icu.baolong.social.common.entity.BaseConstant;
+import icu.baolong.social.common.entity.constants.BaseConstant;
 import icu.baolong.social.common.exception.BusinessException;
 import icu.baolong.social.common.function.limit.Limit;
 import icu.baolong.social.common.function.limit.LimitType;
@@ -11,9 +12,12 @@ import icu.baolong.social.common.response.BaseResponse;
 import icu.baolong.social.common.response.Result;
 import icu.baolong.social.module.user.domain.request.EmailCodeReq;
 import icu.baolong.social.module.user.domain.request.UserLoginReq;
+import icu.baolong.social.module.user.domain.request.UserModifyReq;
 import icu.baolong.social.module.user.domain.request.UserRegisterReq;
+import icu.baolong.social.module.user.domain.request.UserUpdateReq;
 import icu.baolong.social.module.user.domain.response.EmailCodeResp;
 import icu.baolong.social.module.user.domain.response.GraphicCodeResp;
+import icu.baolong.social.module.user.domain.response.UserBadgeResp;
 import icu.baolong.social.module.user.domain.response.UserInfoResp;
 import icu.baolong.social.module.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 用户控制器
  *
@@ -32,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "用户接口", description = "用户相关业务接口")
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 	@Resource
 	private UserService userService;
@@ -91,5 +97,31 @@ public class UserController {
 	@GetMapping("/info")
 	public BaseResponse<UserInfoResp> getUserInfoByLogin() {
 		return Result.success(userService.getUserInfoByLogin());
+	}
+
+	@Operation(summary = "修改用户名称", description = "修改用户名称")
+	@PostMapping("/modifyUserName")
+	public BaseResponse<Boolean> modifyUserName(@RequestBody UserModifyReq userModifyReq) {
+		ThrowUtil.nullIf(userModifyReq, TextConstant.ERROR_NULL_OBJECT);
+		String userName = userModifyReq.getUserName();
+		ThrowUtil.tif(StrUtil.isBlank(userName), "请输入用户名");
+		userService.modifyUserName(userName);
+		return Result.success("修改成功!");
+	}
+
+	@Operation(summary = "获取徽章列表", description = "包含所有徽章以及拥有佩戴等信息")
+	@GetMapping("/badgeList")
+	public BaseResponse<List<UserBadgeResp>> getBadgeList() {
+		return Result.success(userService.getBadgeList());
+	}
+
+	@Operation(summary = "修改用户徽章", description = "修改用户当前佩戴的徽章")
+	@PostMapping("/modifyUserBadge")
+	public BaseResponse<Boolean> modifyUserBadge(@RequestBody UserUpdateReq userUpdateReq) {
+		ThrowUtil.nullIf(userUpdateReq, TextConstant.ERROR_NULL_OBJECT);
+		Long badgeId = userUpdateReq.getBadgeId();
+		ThrowUtil.tif(ObjectUtil.isNull(badgeId), "请选择徽章ID");
+		userService.modifyUserBadge(badgeId);
+		return Result.success("修改成功!");
 	}
 }

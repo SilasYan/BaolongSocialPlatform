@@ -11,7 +11,7 @@ import icu.baolong.social.repository.user.entity.User;
 import icu.baolong.social.repository.user.mapper.UserMapper;
 import icu.baolong.social.module.user.domain.request.UserQueryReq;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Baolong 2025-05-21 21:01:07
  */
-@Service
+@Repository
 public class UserDao extends ServiceImpl<UserMapper, User> {
 
 	/**
@@ -126,5 +126,33 @@ public class UserDao extends ServiceImpl<UserMapper, User> {
 	public User getUserByAccount(String account) {
 		return this.getOne(new LambdaQueryWrapper<User>()
 				.eq(User::getUserAccount, account).or(qw -> qw.eq(User::getUserEmail, account)));
+	}
+
+	/**
+	 * 更新用户名称
+	 *
+	 * @param userId   用户ID
+	 * @param userName 用户名称
+	 * @return 是否成功
+	 */
+	public boolean updateUserNameById(long userId, String userName) {
+		return this.lambdaUpdate()
+				.eq(User::getId, userId)
+				.set(User::getUserName, userName)
+				.update();
+	}
+
+	/**
+	 * 更新用户徽章
+	 *
+	 * @param userId  用户ID
+	 * @param badgeId 徽章ID
+	 * @return 是否成功
+	 */
+	public boolean updateBadgeIdById(long userId, Long badgeId) {
+		return this.lambdaUpdate()
+				.eq(User::getId, userId)
+				.set(User::getBadgeId, badgeId)
+				.update();
 	}
 }

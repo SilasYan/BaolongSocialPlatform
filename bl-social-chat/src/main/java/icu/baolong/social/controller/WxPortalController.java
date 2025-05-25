@@ -6,7 +6,7 @@ import icu.baolong.social.common.function.limit.Limit;
 import icu.baolong.social.common.function.limit.LimitType;
 import icu.baolong.social.common.response.BaseResponse;
 import icu.baolong.social.common.response.Result;
-import icu.baolong.social.weixin.service.WeiXinService;
+import icu.baolong.social.manager.weixin.service.WeiXinService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;

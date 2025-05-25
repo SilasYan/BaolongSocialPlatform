@@ -4,8 +4,11 @@ import icu.baolong.social.module.user.domain.request.UserLoginReq;
 import icu.baolong.social.module.user.domain.request.UserRegisterReq;
 import icu.baolong.social.module.user.domain.response.EmailCodeResp;
 import icu.baolong.social.module.user.domain.response.GraphicCodeResp;
+import icu.baolong.social.module.user.domain.response.UserBadgeResp;
 import icu.baolong.social.module.user.domain.response.UserInfoResp;
 import icu.baolong.social.repository.user.entity.User;
+
+import java.util.List;
 
 /**
  * 用户表 (user) - 服务接口
@@ -84,6 +87,14 @@ public interface UserService {
 	User getUserByWxOpenId(String openId);
 
 	/**
+	 * 根据用户名称获取用户信息
+	 *
+	 * @param userName 用户名称
+	 * @return 用户对象
+	 */
+	User getUserByUserName(String userName);
+
+	/**
 	 * 根据微信OpenId注册用户
 	 *
 	 * @param openId 微信OpenId
@@ -100,4 +111,25 @@ public interface UserService {
 	 * @return 用户对象
 	 */
 	User userUpdateByWxAuthorize(String wxOpenId, String userName, String userAvatar, Integer userSex);
+
+	/**
+	 * 修改用户名称
+	 *
+	 * @param userName 用户名称
+	 */
+	void modifyUserName(String userName);
+
+	/**
+	 * 获取徽章列表
+	 *
+	 * @return 徽章列表
+	 */
+	List<UserBadgeResp> getBadgeList();
+
+	/**
+	 * 修改用户徽章
+	 *
+	 * @param badgeId 徽章ID
+	 */
+	void modifyUserBadge(Long badgeId);
 }

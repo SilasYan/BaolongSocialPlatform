@@ -18,12 +18,9 @@ import java.util.Date;
  * @TableName user_login_log
  */
 @Accessors(chain = true)
-@Data
 @TableName(value = "user_login_log")
+@Data
 public class UserLoginLog implements Serializable {
-	@Serial
-	@TableField(exist = false)
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 主键ID
@@ -60,4 +57,8 @@ public class UserLoginLog implements Serializable {
 	 * 更新时间
 	 */
 	private Date updateTime;
+
+	@Serial
+	@TableField(exist = false)
+	private static final long serialVersionUID = 1L;
 }

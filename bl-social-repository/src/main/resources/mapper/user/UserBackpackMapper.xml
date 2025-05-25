@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="icu.baolong.social.repository.user.mapper.UserBackpackMapper">
+
+    <resultMap id="BaseResultMap" type="icu.baolong.social.repository.user.entity.UserBackpack">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userId" column="user_id" jdbcType="BIGINT"/>
+        <result property="itemId" column="item_id" jdbcType="BIGINT"/>
+        <result property="idempotent" column="idempotent" jdbcType="VARCHAR"/>
+        <result property="useStatus" column="use_status" jdbcType="TINYINT"/>
+        <result property="useTime" column="use_time" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+        <result property="editTime" column="edit_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,item_id,idempotent,
+        use_status,use_time,is_delete,
+        edit_time,create_time,update_time
+    </sql>
+</mapper>
