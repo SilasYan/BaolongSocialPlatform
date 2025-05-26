@@ -9,6 +9,7 @@ import com.wf.captcha.base.Captcha;
 import icu.baolong.social.cache.ItemsCache;
 import icu.baolong.social.common.converter.ConvertUtils;
 import icu.baolong.social.common.utils.ServletUtil;
+import icu.baolong.social.constants.CacheConstant;
 import icu.baolong.social.constants.KeyConstant;
 import icu.baolong.social.constants.TextConstant;
 import icu.baolong.social.common.exception.BusinessException;
@@ -16,6 +17,7 @@ import icu.baolong.social.common.exception.ThrowUtil;
 import icu.baolong.social.manager.email.EmailManager;
 import icu.baolong.social.common.response.RespCode;
 import icu.baolong.social.common.utils.RedisUtil;
+import icu.baolong.social.module.sys.service.SysConfigService;
 import icu.baolong.social.module.user.adapter.UserAdapter;
 import icu.baolong.social.module.items.domain.enums.ItemTypeEnum;
 import icu.baolong.social.module.user.dao.UserBackpackDao;
@@ -57,6 +59,7 @@ public class UserServiceImpl implements UserService {
 	private final RedisUtil redisUtil;
 	private final UserDao userDao;
 	private final EmailManager emailManager;
+	private final SysConfigService sysConfigService;
 	private final UserLoginLogService userLoginLogService;
 	private final UserBackpackDao userBackpackDao;
 	private final ItemsCache itemsCache;
@@ -102,12 +105,14 @@ public class UserServiceImpl implements UserService {
 		boolean exists = userDao.existsUserByUserEmail(userEmail);
 		ThrowUtil.tif(exists, RespCode.FAILED, "邮箱已被注册");
 		// 构建用户对象
-		String password = "123456";
-		User user = UserAdapter.buildDefaultUser(userEmail, this.encryptPassword("baolong", password));
+		String passwordSalt = sysConfigService.getConfigAsValue(CacheConstant.PASSWORD_SALT);
+		String defaultPassword = sysConfigService.getConfigAsValue(CacheConstant.DEFAULT_PASSWORD);
+		String defaultAccountPrefix = sysConfigService.getConfigAsValue(CacheConstant.DEFAULT_ACCOUNT_PREFIX);
+		User user = UserAdapter.buildDefaultUser(userEmail, this.encryptPassword(passwordSalt, defaultPassword), defaultAccountPrefix);
 		// 保存用户信息
 		boolean result = userDao.save(user);
 		ThrowUtil.tif(!result, "注册失败");
-		emailManager.sendEmailAsRegisterSuccess(userEmail, "注册成功 - 暴龙社交平台", password);
+		emailManager.sendEmailAsRegisterSuccess(userEmail, "注册成功 - 暴龙社交平台", defaultPassword);
 		return true;
 	}
 
@@ -155,7 +160,8 @@ public class UserServiceImpl implements UserService {
 		}
 		// 只有通过账号/邮箱+密码登录, 才校验密码
 		if (StrUtil.isBlank(wxOpenId)) {
-			if (!user.getUserPassword().equals(this.encryptPassword("baolong", userLoginReq.getUserPassword()))) {
+			String passwordSalt = sysConfigService.getConfigAsValue(CacheConstant.PASSWORD_SALT);
+			if (!user.getUserPassword().equals(this.encryptPassword(passwordSalt, userLoginReq.getUserPassword()))) {
 				log.error("[用户登录] 登录失败! {}", TextConstant.ERROR_USER_OR_PASSWORD);
 				throw new BusinessException(TextConstant.ERROR_USER_OR_PASSWORD);
 			}
@@ -249,8 +255,9 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void userRegisterByWxOpenId(String openId) {
-		String password = "123456";
-		User user = UserAdapter.buildUserByWxOpenId(openId, this.encryptPassword("baolong", password));
+		String passwordSalt = sysConfigService.getConfigAsValue(CacheConstant.PASSWORD_SALT);
+		String defaultPassword = sysConfigService.getConfigAsValue(CacheConstant.DEFAULT_PASSWORD);
+		User user = UserAdapter.buildUserByWxOpenId(openId, this.encryptPassword(passwordSalt, defaultPassword));
 		userDao.save(user);
 		// TODO 用户注册后的事件
 	}
@@ -269,7 +276,8 @@ public class UserServiceImpl implements UserService {
 		User user = this.getUserByWxOpenId(wxOpenId);
 		boolean update = false;
 		if (StrUtil.isBlank(user.getUserAccount())) {
-			String account = "user." + RandomUtil.randomString(8).toUpperCase();
+			String defaultAccountPrefix = sysConfigService.getConfigAsValue(CacheConstant.DEFAULT_ACCOUNT_PREFIX);
+			String account = defaultAccountPrefix + RandomUtil.randomString(8).toUpperCase();
 			user.setUserAccount(account);
 			update = true;
 		}

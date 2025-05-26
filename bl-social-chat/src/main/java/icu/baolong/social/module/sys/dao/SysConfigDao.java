@@ -12,4 +12,14 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class SysConfigDao extends ServiceImpl<SysConfigMapper, SysConfig> {
+
+	/**
+	 * 根据配置键获取系统配置
+	 *
+	 * @param configKey 配置键
+	 * @return 系统配置对象
+	 */
+	public SysConfig getSysConfigByKey(String configKey) {
+		return this.lambdaQuery().eq(SysConfig::getConfigKey, configKey).one();
+	}
 }

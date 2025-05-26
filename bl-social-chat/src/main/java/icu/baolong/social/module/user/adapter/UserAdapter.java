@@ -25,14 +25,15 @@ public class UserAdapter {
 	/**
 	 * 生成默认用户
 	 *
-	 * @param userEmail    用户邮箱
-	 * @param userPassword 用户密码（已经加密的密码）
+	 * @param userEmail         用户邮箱
+	 * @param userPassword      用户密码（已经加密的密码）
+	 * @param userAccountPrefix 用户账号前缀
 	 * @return 用户对象
 	 */
-	public static User buildDefaultUser(String userEmail, String userPassword) {
+	public static User buildDefaultUser(String userEmail, String userPassword, String userAccountPrefix) {
 		User user = new User();
 		user.setUserEmail(userEmail).setUserPassword(userPassword);
-		String account = "user." + user.getUserEmail().split("@")[0];
+		String account = userAccountPrefix + user.getUserEmail().split("@")[0];
 		user.setUserAccount(account).setUserName(account)
 				.setUserSex(UserSexEnum.OTHER.getKey()).setUserProfile("用户暂未填写个人简介~");
 		return user;

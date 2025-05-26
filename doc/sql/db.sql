@@ -141,7 +141,7 @@ CREATE TABLE sys_config
 (
     id           BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '配置ID',
     config_name  VARCHAR(128)        NOT NULL COMMENT '配置名称',
-    config_desc  VARCHAR(512)        NOT NULL COMMENT '配置描述',
+    config_desc  VARCHAR(512)        NULL     DEFAULT NULL COMMENT '配置描述',
     config_type  TINYINT             NOT NULL COMMENT '配置类型（0-值、1-JSON对象、2-JSON数组）',
     config_key   VARCHAR(128)        NOT NULL COMMENT '配置键',
     config_value VARCHAR(512)        NOT NULL COMMENT '配置值',
