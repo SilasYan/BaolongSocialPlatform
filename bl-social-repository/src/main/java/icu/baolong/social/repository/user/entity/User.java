@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -19,7 +20,7 @@ import java.util.Date;
  * @TableName user
  */
 @Accessors(chain = true)
-@TableName(value = "user")
+@TableName(value = "user", autoResultMap = true)
 @Data
 public class User implements Serializable {
 
@@ -93,6 +94,17 @@ public class User implements Serializable {
 	 * 头像框ID
 	 */
 	private Long avatarFrameId;
+
+	/**
+	 * 在线状态（0-下线, 1-上线）
+	 */
+	private Integer onlineStatus;
+
+	/**
+	 * IP信息
+	 */
+	@TableField(value = "ip_info", typeHandler = JacksonTypeHandler.class)
+	private IpInfo ipInfo;
 
 	/**
 	 * 首次登录时间

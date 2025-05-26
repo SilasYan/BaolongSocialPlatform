@@ -20,6 +20,7 @@ CREATE TABLE user
     share_code         VARCHAR(64)         NULL     DEFAULT NULL COMMENT '分享码',
     badge_id           BIGINT              NULL     DEFAULT NULL COMMENT '徽章ID',
     avatar_frame_id    BIGINT              NULL     DEFAULT NULL COMMENT '头像框ID',
+    ip_info            JSON                NULL     DEFAULT NULL COMMENT 'IP信息',
     first_login_time   DATETIME            NULL     DEFAULT NULL COMMENT '首次登录时间',
     last_login_time    DATETIME            NULL     DEFAULT NULL COMMENT '最后登录时间',
     check_in_days      INT                 NOT NULL DEFAULT 0 COMMENT '连续签到天数',

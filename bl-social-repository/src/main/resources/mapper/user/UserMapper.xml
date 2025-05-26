@@ -17,6 +17,10 @@
         <result property="shareCode" column="share_code" jdbcType="VARCHAR"/>
         <result property="badgeId" column="badge_id" jdbcType="BIGINT"/>
         <result property="avatarFrameId" column="avatar_frame_id" jdbcType="BIGINT"/>
+        <result property="onlineStatus" column="online_status" jdbcType="TINYINT"/>
+        <result property="ipInfo" column="ip_info"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"
+                javaType="icu.baolong.social.repository.user.entity.IpInfo"/>
         <result property="firstLoginTime" column="first_login_time" jdbcType="TIMESTAMP"/>
         <result property="lastLoginTime" column="last_login_time" jdbcType="TIMESTAMP"/>
         <result property="checkInDays" column="check_in_days" jdbcType="INTEGER"/>
@@ -31,8 +35,8 @@
     <sql id="Base_Column_List">
         id,user_account,user_password,
         user_email,user_phone,user_name,
-        user_avatar,user_profile,user_sex,
-        user_points,wx_open_id,share_code,badge_id,avatar_frame_id,
+        user_avatar,user_profile,user_sex,user_points,
+        wx_open_id,share_code,badge_id,avatar_frame_id,online_status,ip_info,
         first_login_time,last_login_time,check_in_days,last_check_in_time,
         is_disabled,is_delete,edit_time,create_time,update_time
     </sql>

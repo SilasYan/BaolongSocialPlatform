@@ -14,7 +14,7 @@ import icu.baolong.social.entity.constants.KeyConstant;
 import icu.baolong.social.entity.constants.TextConstant;
 import icu.baolong.social.common.exception.BusinessException;
 import icu.baolong.social.common.exception.ThrowUtil;
-import icu.baolong.social.events.UserEventPublisher;
+import icu.baolong.social.events.UserRegisterEventPublisher;
 import icu.baolong.social.manager.email.EmailManager;
 import icu.baolong.social.common.response.RespCode;
 import icu.baolong.social.common.utils.RedisUtil;
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
 		boolean result = userDao.save(user);
 		ThrowUtil.tif(!result, "注册失败");
 		emailManager.sendEmailAsRegisterSuccess(userEmail, "注册成功 - 暴龙社交平台", defaultPassword);
-		eventPublisher.publishEvent(new UserEventPublisher(this, user));
+		eventPublisher.publishEvent(new UserRegisterEventPublisher(this, user));
 		return true;
 	}
 
@@ -264,7 +264,7 @@ public class UserServiceImpl implements UserService {
 		User user = UserAdapter.buildUserByWxOpenId(openId, this.encryptPassword(passwordSalt, defaultPassword));
 		userDao.save(user);
 		// 用户注册后的事件, 发放物品
-		eventPublisher.publishEvent(new UserEventPublisher(this, user));
+		eventPublisher.publishEvent(new UserRegisterEventPublisher(this, user));
 	}
 
 	/**

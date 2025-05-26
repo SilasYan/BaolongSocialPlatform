@@ -2,9 +2,13 @@ package icu.baolong.social.manager.websocket.service;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import icu.baolong.social.events.UserOnlineEventPublisher;
+import icu.baolong.social.manager.websocket.utils.NettyUtils;
 import icu.baolong.social.module.user.service.UserService;
+import icu.baolong.social.repository.user.entity.IpInfo;
 import icu.baolong.social.repository.user.entity.User;
 import icu.baolong.social.manager.websocket.adapter.WSAdapter;
 import icu.baolong.social.manager.websocket.domain.ConnectEntity;
@@ -13,9 +17,11 @@ import icu.baolong.social.manager.weixin.service.WeiXinService;
 import io.netty.channel.Channel;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -31,6 +37,8 @@ public class WebSocketService {
 	private WeiXinService weiXinInteractiveService;
 	@Resource
 	private UserService userService;
+	@Resource
+	private ApplicationEventPublisher eventPublisher;
 
 	/**
 	 * 所有连接的channel, 包括用户的连接信息
@@ -114,6 +122,8 @@ public class WebSocketService {
 		SCENE_CHANNEL_MAP.invalidate(qrSceneId);
 		// 发送通知给前端
 		PushUtils.pushMessage(channel, WSAdapter.buildLoginSuccessResp(token, user));
+		// 发布事件
+		publishUserOnlineEvent(channel, user);
 	}
 
 	/**
@@ -130,10 +140,28 @@ public class WebSocketService {
 			Long userId = Long.parseLong(o.toString());
 			ConnectEntity connectEntity = CONNECT_INFO_MAP.get(channel);
 			connectEntity.setUserId(userId);
-			// TODO 其他事件, 用户上线等
 			User user = userService.getUserByUserId(userId);
 			// 发送消息给前端
 			PushUtils.pushMessage(channel, WSAdapter.buildLoginSuccessResp(token, user));
+			// 发布事件
+			publishUserOnlineEvent(channel, user);
 		}
+	}
+
+	/**
+	 * 发布用户上线事件
+	 *
+	 * @param channel 管道
+	 * @param user    用户对象
+	 */
+	private void publishUserOnlineEvent(Channel channel, User user) {
+		user.setLastLoginTime(new Date());
+		String ip = NettyUtils.getAttr(channel, NettyUtils.IP);
+		IpInfo ipInfo = IpInfo.builder().lastLoginIp(ip).build();
+		if (StrUtil.isBlank(user.getIpInfo().getRegisterIp())) {
+			ipInfo.setRegisterIp(ip);
+		}
+		user.setIpInfo(ipInfo);
+		eventPublisher.publishEvent(new UserOnlineEventPublisher(this, user));
 	}
 }
