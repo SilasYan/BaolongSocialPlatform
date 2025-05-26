@@ -61,9 +61,10 @@ public class UserBackpackDao extends ServiceImpl<UserBackpackMapper, UserBackpac
 				.one();
 	}
 
-	/***
+	/**
 	 * 根据用户ID和物品ID列表获取徽章列表
-	 * @param userId  用户ID
+	 *
+	 * @param userId 用户ID
 	 * @return 徽章列表
 	 */
 	public List<UserBackpack> getBadgeListByUserIdAndItemIds(Long userId, List<Long> itemIds) {
@@ -71,5 +72,29 @@ public class UserBackpackDao extends ServiceImpl<UserBackpackMapper, UserBackpac
 				.eq(UserBackpack::getUserId, userId)
 				.in(UserBackpack::getItemId, itemIds)
 				.list();
+	}
+
+	/**
+	 * 根据幂等号获取背包物品
+	 *
+	 * @param idempotent 幂等号
+	 * @return 背包物品
+	 */
+	public UserBackpack getOneByIdempotent(String idempotent) {
+		return this.lambdaQuery().eq(UserBackpack::getIdempotent, idempotent).one();
+	}
+
+	/**
+	 * 根据用户ID和物品ID获取背包物品数量
+	 *
+	 * @param userId 用户ID
+	 * @param itemId 物品ID
+	 * @return 物品数量
+	 */
+	public Long getCountByItemId(Long userId, Long itemId) {
+		return this.lambdaQuery()
+				.eq(UserBackpack::getUserId, userId)
+				.eq(UserBackpack::getItemId, itemId)
+				.count();
 	}
 }

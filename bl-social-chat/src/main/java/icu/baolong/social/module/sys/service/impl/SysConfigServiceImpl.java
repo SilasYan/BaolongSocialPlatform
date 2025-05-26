@@ -50,7 +50,7 @@ public class SysConfigServiceImpl implements SysConfigService {
 	public JSONObject getConfigAsJsonObj(String configKey) {
 		SysConfig sysConfig = sysConfigCache.getConfig(configKey);
 		if (ObjectUtil.isNotNull(sysConfig)) {
-			if (ConfigTypeEnum.VALUE.getKey().equals(sysConfig.getConfigType())) {
+			if (ConfigTypeEnum.JSON_OBJECT.getKey().equals(sysConfig.getConfigType())) {
 				return JSONUtil.parseObj(sysConfig.getConfigValue());
 			}
 		}
@@ -67,7 +67,7 @@ public class SysConfigServiceImpl implements SysConfigService {
 	public JSONArray getConfigAsJsonArr(String configKey) {
 		SysConfig sysConfig = sysConfigCache.getConfig(configKey);
 		if (ObjectUtil.isNotNull(sysConfig)) {
-			if (ConfigTypeEnum.VALUE.getKey().equals(sysConfig.getConfigType())) {
+			if (ConfigTypeEnum.JSON_ARRAY.getKey().equals(sysConfig.getConfigType())) {
 				return JSONUtil.parseArray(sysConfig.getConfigValue());
 			}
 		}

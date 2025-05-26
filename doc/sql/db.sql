@@ -63,15 +63,16 @@ CREATE TABLE user_login_log
 DROP TABLE IF EXISTS items;
 CREATE TABLE items
 (
-    id          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '物品ID',
-    item_type   TINYINT             NOT NULL COMMENT '物品类型（0-改名卡, 1-徽章, 2-头像框）',
-    item_name   VARCHAR(128)        NULL     DEFAULT NULL COMMENT '物品名称',
-    item_desc   VARCHAR(512)        NULL     DEFAULT NULL COMMENT '物品描述',
-    item_image  VARCHAR(512)        NULL     DEFAULT NULL COMMENT '物品图片',
-    is_delete   TINYINT(4)          NOT NULL DEFAULT 0 COMMENT '是否删除（0-正常, 1-删除）',
-    edit_time   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '编辑时间',
-    create_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    update_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    id            BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '物品ID',
+    item_type     TINYINT             NOT NULL COMMENT '物品类型（0-改名卡, 1-徽章, 2-头像框）',
+    item_name     VARCHAR(128)        NULL     DEFAULT NULL COMMENT '物品名称',
+    item_desc     VARCHAR(512)        NULL     DEFAULT NULL COMMENT '物品描述',
+    item_image    VARCHAR(512)        NULL     DEFAULT NULL COMMENT '物品图片',
+    repeat_status TINYINT             NOT NULL DEFAULT 0 COMMENT '允许重复（0-允许, 1-不允许）',
+    is_delete     TINYINT(4)          NOT NULL DEFAULT 0 COMMENT '是否删除（0-正常, 1-删除）',
+    edit_time     DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '编辑时间',
+    create_time   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (id) USING BTREE,
     INDEX idx_item_type (item_type ASC) USING BTREE
 ) ENGINE = InnoDB
@@ -79,20 +80,20 @@ CREATE TABLE items
   COLLATE = utf8mb4_unicode_ci COMMENT = '物品表'
   ROW_FORMAT = DYNAMIC;
 # 物品表初始数据
-INSERT INTO items (item_type, item_name, item_desc, item_image)
-VALUES (0, '改名卡', '用户可以使用改名卡，更改自己的名字。', NULL);
-INSERT INTO items (item_type, item_name, item_desc, item_image)
-VALUES (1, '爆赞徽章', '单条消息被点赞超过10次，即可获得。',
-        'https://cdn-icons-png.flaticon.com/128/1533/1533913.png');
-INSERT INTO items (item_type, item_name, item_desc, item_image)
-VALUES (1, '元老徽章', '前10名注册的用户才能获得的专属徽章。',
-        'https://cdn-icons-png.flaticon.com/512/6198/6198527.png');
-INSERT INTO items (item_type, item_name, item_desc, item_image)
-VALUES (1, '前100徽章', '前100名注册的用户才能获得的专属徽章。',
-        'https://cdn-icons-png.flaticon.com/512/10232/10232583.png');
-INSERT INTO items (item_type, item_name, item_desc, item_image)
-VALUES (1, '星梦徽章', '星梦联盟成员的专属徽章。',
-        'https://cdn-icons-png.flaticon.com/128/2909/2909937.png');
+INSERT INTO items (id, item_type, item_name, item_desc, item_image, repeat_status)
+VALUES (1, 0, '改名卡', '用户可以使用改名卡，更改自己的名字。', NULL, 0);
+INSERT INTO items (id, item_type, item_name, item_desc, item_image, repeat_status)
+VALUES (2, 1, '元老徽章', '前10名注册的用户才能获得的专属徽章。',
+        'https://cdn-icons-png.flaticon.com/512/6198/6198527.png', 1);
+INSERT INTO items (id, item_type, item_name, item_desc, item_image, repeat_status)
+VALUES (3, 1, '前100徽章', '前100名注册的用户才能获得的专属徽章。',
+        'https://cdn-icons-png.flaticon.com/512/10232/10232583.png', 1);
+INSERT INTO items (id, item_type, item_name, item_desc, item_image, repeat_status)
+VALUES (4, 1, '爆赞徽章', '单条消息被点赞超过10次，即可获得。',
+        'https://cdn-icons-png.flaticon.com/128/1533/1533913.png', 1);
+INSERT INTO items (id, item_type, item_name, item_desc, item_image, repeat_status)
+VALUES (5, 1, '星梦徽章', '星梦联盟成员的专属徽章。',
+        'https://cdn-icons-png.flaticon.com/128/2909/2909937.png', 1);
 
 
 # 用户背包表
@@ -103,7 +104,7 @@ CREATE TABLE user_backpack
     user_id     BIGINT(20)          NOT NULL COMMENT '用户ID',
     item_id     BIGINT(20)          NOT NULL COMMENT '物品ID',
     idempotent  VARCHAR(64)         NOT NULL COMMENT '幂等号',
-    use_status  TINYINT             NOT NULL COMMENT '使用状态（0-待使用, 1-已使用）',
+    use_status  TINYINT             NOT NULL DEFAULT 0 COMMENT '使用状态（0-待使用, 1-已使用）',
     use_time    DATETIME            NULL     DEFAULT NULL COMMENT '使用时间',
     is_delete   TINYINT(4)          NOT NULL DEFAULT 0 COMMENT '是否删除（0-正常, 1-删除）',
     edit_time   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '编辑时间',

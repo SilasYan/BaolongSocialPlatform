@@ -1,4 +1,4 @@
-package icu.baolong.social.constants;
+package icu.baolong.social.entity.constants;
 
 /**
  * 文本常量

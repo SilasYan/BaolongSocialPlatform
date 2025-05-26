@@ -8,6 +8,7 @@
         <result property="itemName" column="item_name" jdbcType="VARCHAR"/>
         <result property="itemDesc" column="item_desc" jdbcType="VARCHAR"/>
         <result property="itemImage" column="item_image" jdbcType="VARCHAR"/>
+        <result property="repeatStatus" column="repeat_status" jdbcType="TINYINT"/>
         <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
         <result property="editTime" column="edit_time" jdbcType="TIMESTAMP"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -16,7 +17,7 @@
 
     <sql id="Base_Column_List">
         id,item_type,item_name,
-        item_desc,item_image,is_delete,
+        item_desc,item_image,repeat_status,is_delete,
         edit_time,create_time,update_time
     </sql>
 </mapper>

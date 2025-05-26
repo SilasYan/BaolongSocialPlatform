@@ -1,4 +1,4 @@
-package icu.baolong.social.constants;
+package icu.baolong.social.entity.constants;
 
 /**
  * 缓存常量
@@ -8,7 +8,7 @@ package icu.baolong.social.constants;
 public interface CacheConstant {
 
 	/**
-	 * 密码盐
+	 * 用于密码加密的盐
 	 */
 	String PASSWORD_SALT = "PASSWORD_SALT";
 
@@ -18,7 +18,12 @@ public interface CacheConstant {
 	String DEFAULT_PASSWORD = "DEFAULT_PASSWORD";
 
 	/**
-	 * 默认账号前缀
+	 * 登录账户的默认前缀
 	 */
 	String DEFAULT_ACCOUNT_PREFIX = "DEFAULT_ACCOUNT_PREFIX";
+
+	/**
+	 * 注册发放给用户的物品，是一个数组
+	 */
+	String REGISTER_ITEMS = "REGISTER_ITEMS";
 }

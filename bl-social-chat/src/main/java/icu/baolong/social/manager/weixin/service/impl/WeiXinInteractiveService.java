@@ -3,7 +3,7 @@ package icu.baolong.social.manager.weixin.service.impl;
 import icu.baolong.social.common.exception.BusinessException;
 import icu.baolong.social.common.response.RespCode;
 import icu.baolong.social.common.utils.RedisUtil;
-import icu.baolong.social.constants.KeyConstant;
+import icu.baolong.social.entity.constants.KeyConstant;
 import icu.baolong.social.manager.weixin.service.WeiXinService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -9,11 +9,12 @@ import com.wf.captcha.base.Captcha;
 import icu.baolong.social.cache.ItemsCache;
 import icu.baolong.social.common.converter.ConvertUtils;
 import icu.baolong.social.common.utils.ServletUtil;
-import icu.baolong.social.constants.CacheConstant;
-import icu.baolong.social.constants.KeyConstant;
-import icu.baolong.social.constants.TextConstant;
+import icu.baolong.social.entity.constants.CacheConstant;
+import icu.baolong.social.entity.constants.KeyConstant;
+import icu.baolong.social.entity.constants.TextConstant;
 import icu.baolong.social.common.exception.BusinessException;
 import icu.baolong.social.common.exception.ThrowUtil;
+import icu.baolong.social.events.UserEventPublisher;
 import icu.baolong.social.manager.email.EmailManager;
 import icu.baolong.social.common.response.RespCode;
 import icu.baolong.social.common.utils.RedisUtil;
@@ -37,6 +38,7 @@ import icu.baolong.social.module.user.service.UserService;
 import icu.baolong.social.repository.user.entity.UserBackpack;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.DigestUtils;
@@ -64,6 +66,7 @@ public class UserServiceImpl implements UserService {
 	private final UserBackpackDao userBackpackDao;
 	private final ItemsCache itemsCache;
 	private final TransactionTemplate transactionTemplate;
+	private final ApplicationEventPublisher eventPublisher;
 
 	/**
 	 * 发送邮箱验证码
@@ -113,6 +116,7 @@ public class UserServiceImpl implements UserService {
 		boolean result = userDao.save(user);
 		ThrowUtil.tif(!result, "注册失败");
 		emailManager.sendEmailAsRegisterSuccess(userEmail, "注册成功 - 暴龙社交平台", defaultPassword);
+		eventPublisher.publishEvent(new UserEventPublisher(this, user));
 		return true;
 	}
 
@@ -259,7 +263,8 @@ public class UserServiceImpl implements UserService {
 		String defaultPassword = sysConfigService.getConfigAsValue(CacheConstant.DEFAULT_PASSWORD);
 		User user = UserAdapter.buildUserByWxOpenId(openId, this.encryptPassword(passwordSalt, defaultPassword));
 		userDao.save(user);
-		// TODO 用户注册后的事件
+		// 用户注册后的事件, 发放物品
+		eventPublisher.publishEvent(new UserEventPublisher(this, user));
 	}
 
 	/**

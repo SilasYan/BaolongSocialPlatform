@@ -47,6 +47,11 @@ public class ItemsResp implements Serializable {
 	private String itemImage;
 
 	/**
+	 * 允许重复（0-允许, 1-不允许）
+	 */
+	private Integer repeatStatus;
+
+	/**
 	 * 创建时间
 	 */
 	private Date createTime;

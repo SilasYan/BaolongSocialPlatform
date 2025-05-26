@@ -6,7 +6,7 @@ import icu.baolong.social.common.entity.constants.BaseConstant;
 import icu.baolong.social.common.exception.BusinessException;
 import icu.baolong.social.common.function.limit.Limit;
 import icu.baolong.social.common.function.limit.LimitType;
-import icu.baolong.social.constants.TextConstant;
+import icu.baolong.social.entity.constants.TextConstant;
 import icu.baolong.social.common.exception.ThrowUtil;
 import icu.baolong.social.common.response.BaseResponse;
 import icu.baolong.social.common.response.Result;

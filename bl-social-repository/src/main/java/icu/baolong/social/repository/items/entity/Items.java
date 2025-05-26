@@ -51,6 +51,11 @@ public class Items implements Serializable {
 	private String itemImage;
 
 	/**
+	 * 允许重复（0-允许, 1-不允许）
+	 */
+	private Integer repeatStatus;
+
+	/**
 	 * 是否删除（0-正常, 1-删除）
 	 */
 	private Integer isDelete;
