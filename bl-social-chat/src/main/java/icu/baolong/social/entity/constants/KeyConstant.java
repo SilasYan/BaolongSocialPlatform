@@ -31,4 +31,9 @@ public interface KeyConstant {
 	 * 微信 openId 和场景值 KEY
 	 */
 	String PREFIX_WX_OPENID_SCENE = "wx_openid_scene:%s";
+
+	/**
+	 * 用户权限 KEY 前缀
+	 */
+	String PREFIX_USER_AUTH = "user_auth:%s";
 }

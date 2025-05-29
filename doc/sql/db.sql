@@ -41,6 +41,17 @@ CREATE TABLE user
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_unicode_ci COMMENT = '用户表'
   ROW_FORMAT = DYNAMIC;
+# 用户表初始数据
+INSERT INTO user (id, user_account, user_password, user_email, user_phone, user_name, user_profile, user_sex)
+VALUES (1, 'super', 'ba4cdb9687899fcda66dff6048ccffa8', '510132000@qq.com',
+        '15279290000', '超级管理员', '用户暂未填写个人简介~', 0);
+INSERT INTO user (id, user_account, user_password, user_email, user_phone, user_name, user_profile, user_sex)
+VALUES (2, 'admin', 'ba4cdb9687899fcda66dff6048ccffa8', '510132011@qq.com',
+        '15279291111', '系统管理员', '用户暂未填写个人简介~', 0);
+INSERT INTO user (id, user_account, user_password, user_email, user_phone, user_name, user_profile, user_sex)
+VALUES (3, 'user', 'ba4cdb9687899fcda66dff6048ccffa8', '510132022@qq.com',
+        '15279292222', '普通用户', '用户暂未填写个人简介~', 0);
+
 
 # 用户登录日志表
 DROP TABLE IF EXISTS user_login_log;
@@ -160,3 +171,122 @@ CREATE TABLE sys_config
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_unicode_ci COMMENT = '系统配置表'
   ROW_FORMAT = DYNAMIC;
+
+
+# 黑名单表
+DROP TABLE IF EXISTS blacklist;
+CREATE TABLE blacklist
+(
+    id           BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '黑名单ID',
+    black_type   TINYINT             NOT NULL COMMENT '拉黑类型（0-用户ID、1-IP地址）',
+    black_target VARCHAR(128)        NOT NULL COMMENT '拉黑目标',
+    operator     BIGINT              NOT NULL COMMENT '操作人',
+    create_time  DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time  DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    UNIQUE INDEX idx_black_type_target (black_type, black_target) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '黑名单表'
+  ROW_FORMAT = DYNAMIC;
+
+# 系统角色表
+DROP TABLE IF EXISTS sys_role;
+CREATE TABLE sys_role
+(
+    id          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '角色ID',
+    role_name   VARCHAR(64)         NOT NULL COMMENT '角色名称',
+    role_sign   VARCHAR(64)         NOT NULL COMMENT '角色标识',
+    role_desc   VARCHAR(256)        NULL     DEFAULT NULL COMMENT '角色描述',
+    is_delete   TINYINT(4)          NOT NULL DEFAULT 0 COMMENT '是否删除（0-正常, 1-删除）',
+    edit_time   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '编辑时间',
+    create_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    UNIQUE INDEX uk_role_sign (role_sign) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '系统角色表'
+  ROW_FORMAT = DYNAMIC;
+# 系统角色表初始数据
+INSERT INTO sys_role(id, role_name, role_sign, role_desc)
+VALUES (1, '超级管理员', 'SUPER', '拥有整个系统权限');
+INSERT INTO sys_role(id, role_name, role_sign, role_desc)
+VALUES (2, '系统管理员', 'ADMIN', '拥有除了[S:]开头的所有权限');
+INSERT INTO sys_role(id, role_name, role_sign, role_desc)
+VALUES (3, '普通用户', 'USER', '普通用户');
+
+# 用户角色关联表
+DROP TABLE IF EXISTS user_role;
+CREATE TABLE user_role
+(
+    id          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    user_id     BIGINT(20)          NOT NULL COMMENT '用户ID',
+    role_id     BIGINT(20)          NOT NULL COMMENT '角色ID',
+    create_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    KEY idx_user_id (user_id) USING BTREE,
+    KEY idx_role_id (role_id) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '用户角色关联表'
+  ROW_FORMAT = DYNAMIC;
+# 用户角色关联表初始数据
+INSERT INTO user_role(id, user_id, role_id)
+VALUES (1, 1, 1);
+INSERT INTO user_role(id, user_id, role_id)
+VALUES (2, 2, 2);
+INSERT INTO user_role(id, user_id, role_id)
+VALUES (3, 3, 3);
+
+
+# 系统权限表
+DROP TABLE IF EXISTS sys_permission;
+CREATE TABLE sys_permission
+(
+    id          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '权限ID',
+    perm_name   VARCHAR(64)         NOT NULL COMMENT '权限名称',
+    perm_sign   VARCHAR(64)         NOT NULL COMMENT '权限标识',
+    perm_desc   VARCHAR(256)        NULL     DEFAULT NULL COMMENT '权限描述',
+    is_delete   TINYINT(4)          NOT NULL DEFAULT 0 COMMENT '是否删除（0-正常, 1-删除）',
+    edit_time   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '编辑时间',
+    create_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    UNIQUE INDEX uk_perm_sign (perm_sign) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '系统权限表'
+  ROW_FORMAT = DYNAMIC;
+# 系统权限表初始数据
+INSERT INTO sys_permission(id, perm_name, perm_sign, perm_desc)
+VALUES (1, '所有权限', 'S:ALL', '拥有所有权限');
+INSERT INTO sys_permission(id, perm_name, perm_sign, perm_desc)
+VALUES (2, '管理权限', 'A:ALL', '拥有管理权限');
+INSERT INTO sys_permission(id, perm_name, perm_sign, perm_desc)
+VALUES (3, '用户权限', 'U:ALL', '拥有用户权限');
+
+# 角色权限关联表
+DROP TABLE IF EXISTS role_permission;
+CREATE TABLE role_permission
+(
+    id          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    role_id     BIGINT(20)          NOT NULL COMMENT '角色ID',
+    perm_id     BIGINT(20)          NOT NULL COMMENT '权限ID',
+    create_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    KEY idx_role_id (role_id) USING BTREE,
+    KEY idx_user_id (perm_id) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '角色权限关联表'
+  ROW_FORMAT = DYNAMIC;
+# 角色权限关联表初始数据
+INSERT INTO role_permission(id, role_id, perm_id)
+VALUES (1, 1, 1);
+INSERT INTO role_permission(id, role_id, perm_id)
+VALUES (2, 2, 2);
+INSERT INTO role_permission(id, role_id, perm_id)
+VALUES (3, 3, 3);

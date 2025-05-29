@@ -29,7 +29,6 @@ public class ItemsCache {
 	 */
 	@Cacheable(key = "'items:' + #p0")
 	public List<Items> getItemsListByType(Integer itemType) {
-		System.out.println("从数据库获取物品列表: " + itemType);
 		return itemsDao.getItemsByType(itemType);
 	}
 

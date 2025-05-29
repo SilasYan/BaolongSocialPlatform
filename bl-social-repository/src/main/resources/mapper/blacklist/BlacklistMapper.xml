@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="icu.baolong.social.repository.blacklist.mapper.BlacklistMapper">
+
+    <resultMap id="BaseResultMap" type="icu.baolong.social.repository.blacklist.entity.Blacklist">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="blackType" column="black_type" jdbcType="TINYINT"/>
+        <result property="blackTarget" column="black_target" jdbcType="VARCHAR"/>
+        <result property="operator" column="operator" jdbcType="BIGINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,black_type,black_target,
+        operator,create_time,update_time
+    </sql>
+</mapper>

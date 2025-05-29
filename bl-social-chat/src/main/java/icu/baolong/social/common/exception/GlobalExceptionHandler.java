@@ -2,6 +2,7 @@ package icu.baolong.social.common.exception;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
+import cn.dev33.satoken.exception.NotRoleException;
 import icu.baolong.social.common.response.BaseResponse;
 import icu.baolong.social.common.response.RespCode;
 import icu.baolong.social.common.response.Result;
@@ -31,9 +32,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return Result.failed(RespCode.NOT_LOGIN);
 	}
 
+	@ExceptionHandler(NotRoleException.class)
+	public BaseResponse<?> notPermissionExceptionHandler(NotRoleException e) {
+		log.error("[用户无对应角色] {}", e.getMessage());
+		return Result.failed(RespCode.NOT_ROLE);
+	}
+
 	@ExceptionHandler(NotPermissionException.class)
 	public BaseResponse<?> notPermissionExceptionHandler(NotPermissionException e) {
-		log.error("[用户无权限] {}", e.getMessage());
+		log.error("[用户无具体权限] {}", e.getMessage());
 		return Result.failed(RespCode.NOT_AUTH);
 	}
 

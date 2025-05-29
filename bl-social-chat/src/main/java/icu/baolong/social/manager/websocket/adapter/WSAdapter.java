@@ -1,9 +1,10 @@
 package icu.baolong.social.manager.websocket.adapter;
 
+import icu.baolong.social.manager.websocket.domain.response.BlackUserResp;
 import icu.baolong.social.repository.user.entity.User;
 import icu.baolong.social.manager.websocket.domain.response.LoginAuthorizeResp;
 import icu.baolong.social.manager.websocket.domain.response.LoginSuccessResp;
-import icu.baolong.social.manager.websocket.domain.response.QRCodeResp;
+import icu.baolong.social.manager.websocket.domain.response.LoginQRCodeResp;
 import icu.baolong.social.manager.websocket.domain.base.WSResp;
 import icu.baolong.social.manager.websocket.domain.enums.WSRespTypeEnum;
 import icu.baolong.social.manager.websocket.domain.response.TokenInvalidateResp;
@@ -21,10 +22,10 @@ public class WSAdapter {
 	 * @param qrCodeUrl 二维码地址
 	 * @return 登录二维码响应
 	 */
-	public static WSResp<QRCodeResp> buildQrCodeResp(String qrCodeUrl) {
-		return WSResp.<QRCodeResp>builder()
+	public static WSResp<LoginQRCodeResp> buildLoginQrCodeResp(String qrCodeUrl) {
+		return WSResp.<LoginQRCodeResp>builder()
 				.type(WSRespTypeEnum.LOGIN_QR_CODE_URL.getKey())
-				.data(QRCodeResp.builder().qrCodeUrl(qrCodeUrl).build())
+				.data(LoginQRCodeResp.builder().qrCodeUrl(qrCodeUrl).build())
 				.build();
 	}
 
@@ -66,6 +67,18 @@ public class WSAdapter {
 	public static WSResp<TokenInvalidateResp> buildTokenInvalidateResp() {
 		return WSResp.<TokenInvalidateResp>builder()
 				.type(WSRespTypeEnum.TOKEN_INVALIDATE.getKey())
+				.build();
+	}
+
+	/**
+	 * 构建拉黑用户响应
+	 *
+	 * @return 拉黑用户响应
+	 */
+	public static WSResp<BlackUserResp> buildBlackUserResp(Long userId) {
+		return WSResp.<BlackUserResp>builder()
+				.type(WSRespTypeEnum.BLACK_USER.getKey())
+				.data(BlackUserResp.builder().userId(userId).build())
 				.build();
 	}
 }

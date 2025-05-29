@@ -14,10 +14,13 @@ import icu.baolong.social.entity.constants.KeyConstant;
 import icu.baolong.social.entity.constants.TextConstant;
 import icu.baolong.social.common.exception.BusinessException;
 import icu.baolong.social.common.exception.ThrowUtil;
+import icu.baolong.social.events.UserBlackPublisher;
 import icu.baolong.social.events.UserRegisterEventPublisher;
 import icu.baolong.social.manager.email.EmailManager;
 import icu.baolong.social.common.response.RespCode;
 import icu.baolong.social.common.utils.RedisUtil;
+import icu.baolong.social.module.blacklist.dao.BlacklistDao;
+import icu.baolong.social.module.blacklist.domain.enums.BlackTypeEnum;
 import icu.baolong.social.module.sys.service.SysConfigService;
 import icu.baolong.social.module.user.adapter.UserAdapter;
 import icu.baolong.social.module.items.domain.enums.ItemTypeEnum;
@@ -28,7 +31,9 @@ import icu.baolong.social.module.user.domain.response.UserBadgeResp;
 import icu.baolong.social.module.user.domain.response.UserInfoResp;
 import icu.baolong.social.module.user.domain.enums.UserDisabledEnum;
 import icu.baolong.social.module.user.service.UserLoginLogService;
+import icu.baolong.social.repository.blacklist.entity.Blacklist;
 import icu.baolong.social.repository.items.entity.Items;
+import icu.baolong.social.repository.user.entity.IpInfo;
 import icu.baolong.social.repository.user.entity.User;
 import icu.baolong.social.module.user.dao.UserDao;
 import icu.baolong.social.module.user.domain.request.UserRegisterReq;
@@ -40,6 +45,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.DigestUtils;
 
@@ -67,6 +73,7 @@ public class UserServiceImpl implements UserService {
 	private final ItemsCache itemsCache;
 	private final TransactionTemplate transactionTemplate;
 	private final ApplicationEventPublisher eventPublisher;
+	private final BlacklistDao blacklistDao;
 
 	/**
 	 * 发送邮箱验证码
@@ -368,6 +375,45 @@ public class UserServiceImpl implements UserService {
 		// 佩戴徽章
 		boolean result = userDao.updateBadgeIdById(userId, badgeId);
 		ThrowUtil.tif(!result, "佩戴徽章失败, 请联系管理员~");
+	}
+
+	/**
+	 * 拉黑用户
+	 *
+	 * @param userId 用户ID
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void blackUser(Long userId) {
+		long loginUserId = StpUtil.getLoginIdAsLong();
+		handleBlack(loginUserId, BlackTypeEnum.USERID.getKey(), String.valueOf(userId));
+		User user = userDao.getById(userId);
+		IpInfo ipInfo = user.getIpInfo();
+		if (ipInfo != null) {
+			handleBlack(loginUserId, BlackTypeEnum.IP.getKey(), ipInfo.getRegisterIp());
+			handleBlack(loginUserId, BlackTypeEnum.IP.getKey(), ipInfo.getLastLoginIp());
+		}
+		// 发布事件
+		eventPublisher.publishEvent(new UserBlackPublisher(this, user));
+	}
+
+	/**
+	 * 处理拉黑
+	 *
+	 * @param loginUserId 当前登录用户ID
+	 * @param blackType   拉黑的类型
+	 * @param blackTarget 拉黑的目标
+	 */
+	private void handleBlack(Long loginUserId, Integer blackType, String blackTarget) {
+		try {
+			Blacklist blacklist = new Blacklist();
+			blacklist.setBlackType(blackType);
+			blacklist.setBlackTarget(blackTarget);
+			blacklist.setOperator(loginUserId);
+			blacklistDao.save(blacklist);
+		} catch (Exception e) {
+			log.info("[拉黑用户] 拉黑失败, 错误信息: {}", e.getMessage());
+		}
 	}
 
 	// region 私有方法

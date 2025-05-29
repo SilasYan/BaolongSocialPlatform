@@ -132,4 +132,11 @@ public interface UserService {
 	 * @param badgeId 徽章ID
 	 */
 	void modifyUserBadge(Long badgeId);
+
+	/**
+	 * 拉黑用户
+	 *
+	 * @param userId 用户ID
+	 */
+	void blackUser(Long userId);
 }

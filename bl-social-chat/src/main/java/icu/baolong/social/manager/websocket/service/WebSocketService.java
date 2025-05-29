@@ -5,7 +5,10 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import icu.baolong.social.common.thread.ThreadPoolConfig;
 import icu.baolong.social.events.UserOnlineEventPublisher;
+import icu.baolong.social.manager.websocket.domain.base.WSResp;
+import icu.baolong.social.manager.websocket.domain.response.BlackUserResp;
 import icu.baolong.social.manager.websocket.utils.NettyUtils;
 import icu.baolong.social.module.user.service.UserService;
 import icu.baolong.social.repository.user.entity.IpInfo;
@@ -18,11 +21,13 @@ import io.netty.channel.Channel;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * WebSocket服务
@@ -39,6 +44,8 @@ public class WebSocketService {
 	private UserService userService;
 	@Resource
 	private ApplicationEventPublisher eventPublisher;
+	@Resource
+	private ThreadPoolTaskExecutor pushExecutor;
 
 	/**
 	 * 所有连接的channel, 包括用户的连接信息
@@ -85,7 +92,7 @@ public class WebSocketService {
 		// 保存sceneId和channel的关系
 		SCENE_CHANNEL_MAP.put(qrSceneId, channel);
 		// 发送通知给前端
-		PushUtils.pushMessage(channel, WSAdapter.buildQrCodeResp(qrCodeUrl));
+		PushUtils.pushMessage(channel, WSAdapter.buildLoginQrCodeResp(qrCodeUrl));
 	}
 
 	/**
@@ -163,5 +170,18 @@ public class WebSocketService {
 		}
 		user.setIpInfo(ipInfo);
 		eventPublisher.publishEvent(new UserOnlineEventPublisher(this, user));
+	}
+
+	/**
+	 * 推送消息给所有在线用户
+	 *
+	 * @param wsResp 消息对象
+	 */
+	public void pushToAllOnline(WSResp<?> wsResp) {
+		CONNECT_INFO_MAP.forEach((channel, connectEntity) -> {
+			pushExecutor.execute(() -> {
+				PushUtils.pushMessage(channel, wsResp);
+			});
+		});
 	}
 }

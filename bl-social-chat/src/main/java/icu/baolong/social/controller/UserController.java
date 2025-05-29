@@ -1,7 +1,10 @@
 package icu.baolong.social.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import icu.baolong.social.auth.constants.AuthConstant;
 import icu.baolong.social.common.entity.constants.BaseConstant;
 import icu.baolong.social.common.exception.BusinessException;
 import icu.baolong.social.common.function.limit.Limit;
@@ -10,6 +13,7 @@ import icu.baolong.social.entity.constants.TextConstant;
 import icu.baolong.social.common.exception.ThrowUtil;
 import icu.baolong.social.common.response.BaseResponse;
 import icu.baolong.social.common.response.Result;
+import icu.baolong.social.module.blacklist.domain.request.BlockReq;
 import icu.baolong.social.module.user.domain.request.EmailCodeReq;
 import icu.baolong.social.module.user.domain.request.UserLoginReq;
 import icu.baolong.social.module.user.domain.request.UserModifyReq;
@@ -123,5 +127,15 @@ public class UserController {
 		ThrowUtil.tif(ObjectUtil.isNull(badgeId), "请选择徽章ID");
 		userService.modifyUserBadge(badgeId);
 		return Result.success("修改成功!");
+	}
+
+	@SaCheckPermission(value = {AuthConstant.S_ALL, AuthConstant.A_ALL, "user:black"}, mode = SaMode.OR)
+	@Operation(summary = "拉黑用户", description = "拉黑用户操作")
+	@PostMapping("/black")
+	public BaseResponse<?> black(@RequestBody BlockReq blockReq) {
+		ThrowUtil.nullIf(blockReq, TextConstant.ERROR_NULL_OBJECT);
+		ThrowUtil.tif(ObjectUtil.isNull(blockReq.getUserId()), "请选择要拉黑的用户");
+		userService.blackUser(blockReq.getUserId());
+		return Result.success();
 	}
 }
