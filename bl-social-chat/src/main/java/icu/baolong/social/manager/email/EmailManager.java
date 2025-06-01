@@ -2,7 +2,7 @@ package icu.baolong.social.manager.email;
 
 import icu.baolong.social.common.thread.ThreadPoolConfig;
 import icu.baolong.social.common.exception.BusinessException;
-import icu.baolong.social.common.response.RespCode;
+import icu.baolong.social.common.base.response.RespCode;
 import icu.baolong.social.common.utils.EmailUtil;
 import jakarta.annotation.Resource;
 import jakarta.mail.MessagingException;

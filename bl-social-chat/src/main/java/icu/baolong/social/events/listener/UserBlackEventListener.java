@@ -1,8 +1,8 @@
 package icu.baolong.social.events.listener;
 
-import icu.baolong.social.events.UserBlackPublisher;
-import icu.baolong.social.manager.websocket.adapter.WSAdapter;
-import icu.baolong.social.manager.websocket.service.WebSocketService;
+import icu.baolong.social.events.UserBlackEventPublisher;
+import icu.baolong.social.service.websocket.adapter.WSAdapter;
+import icu.baolong.social.service.websocket.service.WebSocketService;
 import icu.baolong.social.module.user.dao.UserDao;
 import icu.baolong.social.module.user.domain.enums.UserDisabledEnum;
 import icu.baolong.social.repository.user.entity.User;
@@ -27,18 +27,18 @@ public class UserBlackEventListener {
 	/**
 	 * 监听用户拉黑, 禁用用户
 	 *
-	 * @param userEvent 用户事件
+	 * @param event 事件对象
 	 */
 	@Async
-	@TransactionalEventListener(classes = UserBlackPublisher.class, phase = TransactionPhase.AFTER_COMMIT)
-	public void disableUser(UserBlackPublisher userEvent) {
+	@TransactionalEventListener(classes = UserBlackEventPublisher.class, phase = TransactionPhase.AFTER_COMMIT)
+	public void disableUser(UserBlackEventPublisher event) {
 		// 修改用户的状态为禁用
-		User user = userEvent.getUser();
+		User user = event.getUser();
 		User updateUser = new User();
-		updateUser.setId(user.getId());
+		updateUser.setUserId(user.getUserId());
 		updateUser.setIsDisabled(UserDisabledEnum.DISABLED.getKey());
 		userDao.updateById(updateUser);
 		// 通知所有在线用户
-		webSocketService.pushToAllOnline(WSAdapter.buildBlackUserResp(user.getId()));
+		webSocketService.pushToAllOnline(WSAdapter.buildBlackUserResp(user.getUserId()));
 	}
 }

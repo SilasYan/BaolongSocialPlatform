@@ -5,14 +5,14 @@ import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import icu.baolong.social.auth.constants.AuthConstant;
-import icu.baolong.social.common.entity.constants.BaseConstant;
+import icu.baolong.social.common.constants.BaseConstant;
 import icu.baolong.social.common.exception.BusinessException;
-import icu.baolong.social.common.function.limit.Limit;
-import icu.baolong.social.common.function.limit.LimitType;
-import icu.baolong.social.entity.constants.TextConstant;
+import icu.baolong.social.function.limit.Limit;
+import icu.baolong.social.function.limit.LimitType;
+import icu.baolong.social.common.constants.TextConstant;
 import icu.baolong.social.common.exception.ThrowUtil;
-import icu.baolong.social.common.response.BaseResponse;
-import icu.baolong.social.common.response.Result;
+import icu.baolong.social.common.base.response.BaseResponse;
+import icu.baolong.social.common.base.response.Result;
 import icu.baolong.social.module.blacklist.domain.request.BlockReq;
 import icu.baolong.social.module.user.domain.request.EmailCodeReq;
 import icu.baolong.social.module.user.domain.request.UserLoginReq;
@@ -80,7 +80,7 @@ public class UserController {
 		ThrowUtil.nullIf(userLoginReq, TextConstant.ERROR_NULL_OBJECT);
 		String account = userLoginReq.getAccount();
 		ThrowUtil.tif(StrUtil.isBlank(account), "请输入账号或邮箱");
-		if (account.length() < BaseConstant.FIVE) {
+		if (account.length() < BaseConstant.FOUR) {
 			throw new BusinessException("账号或邮箱长度不能小于5位");
 		}
 		String userPassword = userLoginReq.getUserPassword();

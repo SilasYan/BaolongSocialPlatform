@@ -32,6 +32,6 @@ public class ItemsDao extends ServiceImpl<ItemsMapper, Items> {
 	 * @return 物品详情
 	 */
 	public Items getItemById(Long itemId) {
-		return this.lambdaQuery().eq(Items::getId, itemId).one();
+		return this.lambdaQuery().eq(Items::getItemId, itemId).one();
 	}
 }

@@ -2,11 +2,11 @@ package icu.baolong.social.controller;
 
 import cn.hutool.core.util.StrUtil;
 import icu.baolong.social.common.exception.ThrowUtil;
-import icu.baolong.social.common.function.limit.Limit;
-import icu.baolong.social.common.function.limit.LimitType;
-import icu.baolong.social.common.response.BaseResponse;
-import icu.baolong.social.common.response.Result;
-import icu.baolong.social.manager.weixin.service.WeiXinService;
+import icu.baolong.social.function.limit.Limit;
+import icu.baolong.social.function.limit.LimitType;
+import icu.baolong.social.common.base.response.BaseResponse;
+import icu.baolong.social.common.base.response.Result;
+import icu.baolong.social.service.weixin.service.WeiXinService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;

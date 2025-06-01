@@ -5,7 +5,7 @@ import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import icu.baolong.social.common.page.PageRequest;
+import icu.baolong.social.common.base.page.PageRequest;
 import icu.baolong.social.common.utils.LambdaUtil;
 import icu.baolong.social.repository.user.entity.User;
 import icu.baolong.social.repository.user.mapper.UserMapper;
@@ -52,7 +52,7 @@ public class UserDao extends ServiceImpl<UserMapper, User> {
 		String shareCode = request.getShareCode();
 		Integer isDisabled = request.getIsDisabled();
 		LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-		lambdaQueryWrapper.eq(ObjUtil.isNotNull(id), User::getId, id);
+		lambdaQueryWrapper.eq(ObjUtil.isNotNull(id), User::getUserId, id);
 		lambdaQueryWrapper.eq(StrUtil.isNotEmpty(userAccount), User::getUserAccount, userAccount);
 		lambdaQueryWrapper.eq(StrUtil.isNotEmpty(userEmail), User::getUserEmail, userEmail);
 		lambdaQueryWrapper.eq(StrUtil.isNotEmpty(userPhone), User::getUserPhone, userPhone);
@@ -137,7 +137,7 @@ public class UserDao extends ServiceImpl<UserMapper, User> {
 	 */
 	public boolean updateUserNameById(long userId, String userName) {
 		return this.lambdaUpdate()
-				.eq(User::getId, userId)
+				.eq(User::getUserId, userId)
 				.set(User::getUserName, userName)
 				.update();
 	}
@@ -151,8 +151,21 @@ public class UserDao extends ServiceImpl<UserMapper, User> {
 	 */
 	public boolean updateBadgeIdById(long userId, Long badgeId) {
 		return this.lambdaUpdate()
-				.eq(User::getId, userId)
+				.eq(User::getUserId, userId)
 				.set(User::getBadgeId, badgeId)
 				.update();
+	}
+
+	/**
+	 * 根据用户ID获取用户部分信息列表
+	 *
+	 * @param userIdList 用户ID列表
+	 * @return 用户息列表
+	 */
+	public List<User> getUserBaseInfoListByUserIdList(List<Long> userIdList) {
+		return this.lambdaQuery()
+				.select(User::getUserId, User::getUserName, User::getUserAvatar, User::getOnlineStatus)
+				.in(User::getUserId, userIdList)
+				.list();
 	}
 }

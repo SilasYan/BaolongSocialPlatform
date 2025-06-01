@@ -1,8 +1,8 @@
 package icu.baolong.social.controller;
 
 import icu.baolong.social.common.exception.ThrowUtil;
-import icu.baolong.social.common.response.BaseResponse;
-import icu.baolong.social.common.response.Result;
+import icu.baolong.social.common.base.response.BaseResponse;
+import icu.baolong.social.common.base.response.Result;
 import icu.baolong.social.module.items.domain.enums.ItemTypeEnum;
 import icu.baolong.social.module.items.domain.request.ItemsQueryReq;
 import icu.baolong.social.module.items.domain.response.ItemsResp;

@@ -1,6 +1,7 @@
 package icu.baolong.social.common.utils;
 
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import org.apache.ibatis.reflection.property.PropertyNamer;
 import org.springframework.cglib.core.ReflectUtils;
 
 import java.beans.Introspector;
@@ -15,6 +16,8 @@ import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -194,4 +197,91 @@ public class LambdaUtil {
 	}
 
 	// endregion 根据属性获取到 MyBatisPlus 的 SFunction
+
+	// region 根据 SFunction<T, ?> 获取到类型
+
+	/**
+	 * 获取 SFunction 对应字段的类型
+	 *
+	 * @param lambda 如 User::getName
+	 * @return 字段的 Class 类型
+	 */
+	public static <T, R> Class<?> getType(SFunction<T, R> lambda) {
+		SerializedLambda serializedLambda = getSerializedLambda(lambda);
+		String implMethodName = getImplMethodName(serializedLambda);
+
+		// 获取实体类类型（关键！）
+		Class<?> entityClass = getContainingClass(lambda, serializedLambda);
+
+		// 获取字段名
+		String fieldName = PropertyNamer.methodToProperty(implMethodName);
+
+		try {
+			Field field = entityClass.getDeclaredField(fieldName);
+			field.setAccessible(true);
+			return field.getType();
+		} catch (NoSuchFieldException | SecurityException e) {
+			throw new RuntimeException("无法获取字段 [" + fieldName + "] 的类型", e);
+		}
+	}
+
+	/**
+	 * 获取 SerializedLambda 实例
+	 */
+	private static SerializedLambda getSerializedLambda(Serializable lambda) {
+		try {
+			Method replaceMethod = lambda.getClass().getDeclaredMethod("writeReplace");
+			replaceMethod.setAccessible(true);
+			return (SerializedLambda) replaceMethod.invoke(lambda);
+		} catch (Exception e) {
+			throw new RuntimeException("无法解析lambda表达式", e);
+		}
+	}
+
+	/**
+	 * 获取实现方法名（例如 getName）
+	 */
+	private static String getImplMethodName(SerializedLambda lambda) {
+		try {
+			Method method = SerializedLambda.class.getDeclaredMethod("getImplMethodName");
+			method.setAccessible(true);
+			return (String) method.invoke(lambda);
+		} catch (Exception e) {
+			throw new RuntimeException("无法获取 lambda 的实现方法名", e);
+		}
+	}
+
+	/**
+	 * 获取 lambda 所属的实体类（兼容 JDK 21）
+	 */
+	private static <T, R> Class<?> getContainingClass(SFunction<T, R> lambda, SerializedLambda lambdaProxy) {
+		String className = lambdaProxy.getImplClass().replace("/", ".");
+		Class<?> clazz = null;
+		try {
+			clazz = Class.forName(className);
+		} catch (ClassNotFoundException ignored) {
+		}
+
+		if (clazz == null) {
+			// 如果失败，尝试从函数接口的泛型中推断
+			try {
+				Type[] interfaces = lambda.getClass().getGenericInterfaces();
+				for (Type type : interfaces) {
+					if (type instanceof ParameterizedType pt && pt.getRawType() instanceof Class<?> c && c.isAssignableFrom(Function.class)) {
+						Type[] args = pt.getActualTypeArguments();
+						if (args.length > 0 && args[0] instanceof Class<?> cls) {
+							return cls;
+						}
+					}
+				}
+			} catch (Exception ignored) {
+			}
+
+			throw new IllegalArgumentException("无法识别 lambda 表达式的实体类：" + lambdaProxy.getImplClass());
+		}
+
+		return clazz;
+	}
+
+	// endregion 根据 SFunction<T, ?> 获取到类型
 }

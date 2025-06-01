@@ -1,8 +1,8 @@
 package icu.baolong.social.events.listener;
 
 import cn.hutool.json.JSONArray;
-import icu.baolong.social.entity.constants.CacheConstant;
-import icu.baolong.social.entity.enums.BusinessTypeEnum;
+import icu.baolong.social.common.constants.CacheConstant;
+import icu.baolong.social.common.enums.BusinessTypeEnum;
 import icu.baolong.social.events.UserRegisterEventPublisher;
 import icu.baolong.social.module.sys.service.SysConfigService;
 import icu.baolong.social.module.user.service.UserBackpackService;
@@ -26,15 +26,15 @@ public class UserRegisterEventListener {
 	/**
 	 * 监听用户注册, 发放注册物品
 	 *
-	 * @param userEvent 用户事件
+	 * @param event 事件对象
 	 */
 	@Async
 	@EventListener(classes = UserRegisterEventPublisher.class)
-	public void distributeItem(UserRegisterEventPublisher userEvent) {
+	public void distributeItem(UserRegisterEventPublisher event) {
 		JSONArray itemsId = sysConfigService.getConfigAsJsonArr(CacheConstant.REGISTER_ITEMS);
 		for (Object o : itemsId) {
 			Long itemId = Long.parseLong(o.toString());
-			userBackpackService.distributeItems(userEvent.getUser().getId(), itemId, BusinessTypeEnum.REGISTER.getKey());
+			userBackpackService.distributeItems(event.getUser().getUserId(), itemId, BusinessTypeEnum.REGISTER.getKey());
 		}
 	}
 }

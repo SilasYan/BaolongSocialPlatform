@@ -1,7 +1,7 @@
 package icu.baolong.social.module.items.service.impl;
 
 import icu.baolong.social.cache.ItemsCache;
-import icu.baolong.social.common.converter.ConvertUtils;
+import icu.baolong.social.module.items.adapter.ItemsAdapter;
 import icu.baolong.social.module.items.domain.response.ItemsResp;
 import icu.baolong.social.module.items.service.ItemsService;
 import icu.baolong.social.repository.items.entity.Items;
@@ -30,7 +30,7 @@ public class ItemsServiceImpl implements ItemsService {
 	@Override
 	public List<ItemsResp> getItemsListByType(Integer itemType) {
 		List<Items> itemsList = itemsCache.getItemsListByType(itemType);
-		return ConvertUtils.fromList(ItemsResp.class, itemsList, "itemId");
+		return ItemsAdapter.buildItemsRespList(itemsList);
 	}
 
 	/**

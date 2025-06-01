@@ -290,3 +290,183 @@ INSERT INTO role_permission(id, role_id, perm_id)
 VALUES (2, 2, 2);
 INSERT INTO role_permission(id, role_id, perm_id)
 VALUES (3, 3, 3);
+
+
+# 房间表
+DROP TABLE IF EXISTS room;
+CREATE TABLE room
+(
+    id            BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '房间ID',
+    room_type     TINYINT             NOT NULL COMMENT '房间类型（0-单聊、1-群聊）',
+    show_type     TINYINT             NOT NULL DEFAULT 0 COMMENT '展示类型（0-非全员展示、1-全员展示）',
+    last_msg_id   BIGINT(20)          NULL     DEFAULT NULL COMMENT '房间中最后一条消息ID',
+    last_msg_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '房间中最后一条消息时间（全员群用到）',
+    extend_info   JSON                NULL     DEFAULT NULL COMMENT '扩展信息（根据不同类型房间存储不同的信息）',
+    is_delete     TINYINT(4)          NOT NULL DEFAULT 0 COMMENT '是否删除（0-正常, 1-删除）',
+    edit_time     DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '编辑时间',
+    create_time   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    KEY idx_create_time (create_time) USING BTREE,
+    KEY idx_update_time (update_time) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '房间表'
+  ROW_FORMAT = DYNAMIC;
+
+# 单聊房间表
+DROP TABLE IF EXISTS room_friend;
+CREATE TABLE room_friend
+(
+    id          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    room_id     BIGINT(20)          NOT NULL COMMENT '房间ID',
+    user_id1    BIGINT(20)          NOT NULL COMMENT '用户ID1（较小的ID）',
+    user_id2    BIGINT(20)          NOT NULL COMMENT '用户ID2（较大的ID）',
+    room_key    VARCHAR(64)         NOT NULL COMMENT '房间key（由两个用户ID根据逗号拼接, 需要先做排序再拼接）',
+    room_status TINYINT             NOT NULL DEFAULT 0 COMMENT '房间状态（0-正常、1-禁用, 删好友了）',
+    create_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    UNIQUE KEY room_key (room_key) USING BTREE,
+    KEY idx_room_id (room_id) USING BTREE,
+    KEY idx_create_time (create_time) USING BTREE,
+    KEY idx_update_time (update_time) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '单聊房间表'
+  ROW_FORMAT = DYNAMIC;
+
+# 群聊房间表
+DROP TABLE IF EXISTS room_group;
+CREATE TABLE room_group
+(
+    id           BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    room_id      BIGINT(20)          NOT NULL COMMENT '房间ID',
+    leader_id    BIGINT(20)          NOT NULL COMMENT '群主ID',
+    group_name   VARCHAR(128)        NOT NULL COMMENT '群名称',
+    group_avatar VARCHAR(500)        NOT NULL COMMENT '群头像',
+    extend_info  JSON                NULL     DEFAULT NULL COMMENT '扩展信息（根据不同类型房间存储不同的信息）',
+    is_delete    TINYINT(4)          NOT NULL DEFAULT 0 COMMENT '是否删除（0-正常, 1-删除）',
+    edit_time    DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '编辑时间',
+    create_time  DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time  DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    KEY idx_room_id (room_id) USING BTREE,
+    KEY idx_create_time (create_time) USING BTREE,
+    KEY idx_update_time (update_time) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '群聊房间表'
+  ROW_FORMAT = DYNAMIC;
+
+# 群成员表
+DROP TABLE IF EXISTS group_member;
+CREATE TABLE group_member
+(
+    id          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    group_id    BIGINT(20)          NOT NULL COMMENT '群聊ID',
+    user_id     BIGINT(20)          NOT NULL COMMENT '用户ID',
+    member_role TINYINT             NOT NULL COMMENT '成员角色（0-群主、1-管理、2-成员）',
+    create_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    KEY idx_group_id_role (group_id, member_role) USING BTREE,
+    KEY idx_create_time (create_time) USING BTREE,
+    KEY idx_update_time (update_time) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '群成员表'
+  ROW_FORMAT = DYNAMIC;
+
+# 房间会话表
+DROP TABLE IF EXISTS room_contact;
+CREATE TABLE room_contact
+(
+    id            BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '会话ID',
+    user_id       BIGINT(20)          NOT NULL COMMENT '用户ID',
+    room_id       BIGINT(20)          NOT NULL COMMENT '房间ID',
+    read_time     DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '会话读取的时间',
+    last_msg_id   BIGINT(20)          NULL     DEFAULT NULL COMMENT '会话中最后一条消息ID',
+    last_msg_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '会话中最后一条消息时间（非全员群用到）',
+    create_time   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    UNIQUE KEY uniq_user_id_room_id (user_id, room_id) USING BTREE,
+    KEY idx_room_id_read_time (room_id, read_time) USING BTREE,
+    KEY idx_create_time (create_time) USING BTREE,
+    KEY idx_update_time (update_time) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '房间会话表'
+  ROW_FORMAT = DYNAMIC;
+
+# 消息表
+DROP TABLE IF EXISTS message;
+CREATE TABLE message
+(
+    id          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '消息ID',
+    room_id     BIGINT(20)          NOT NULL COMMENT '房间ID',
+    sender_id   BIGINT(20)          NOT NULL COMMENT '发送者ID',
+    msg_type    TINYINT             NOT NULL DEFAULT 0 COMMENT '消息类型（0-正常文本、1-撤回消息）',
+    content     VARCHAR(1024)       NULL     DEFAULT NULL COMMENT '消息内容',
+    reply_id    BIGINT(20)          NULL     DEFAULT NULL COMMENT '回复的消息ID',
+    reply_gap   INT(11)             NULL     DEFAULT NULL COMMENT '与回复的消息间隔多少条',
+    msg_status  TINYINT             NOT NULL DEFAULT 0 COMMENT '消息状态（0-正常、1-删除）',
+    extend_info JSON                NULL     DEFAULT NULL COMMENT '扩展信息',
+    create_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    INDEX idx_room_id (room_id) USING BTREE,
+    INDEX idx_sender_id (sender_id) USING BTREE,
+    INDEX idx_create_time (create_time) USING BTREE,
+    INDEX idx_update_time (update_time) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '消息表'
+  ROW_FORMAT = DYNAMIC;
+
+# 好友表
+DROP TABLE IF EXISTS friend;
+CREATE TABLE friend
+(
+    id          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    my_id       BIGINT(20)          NOT NULL COMMENT '我的ID',
+    friend_id   BIGINT(20)          NOT NULL COMMENT '好友ID',
+    is_delete   TINYINT(4)          NOT NULL DEFAULT 0 COMMENT '是否删除（0-正常, 1-删除）',
+    edit_time   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '编辑时间',
+    create_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    KEY idx_my_id_friend_id (my_id, friend_id) USING BTREE,
+    KEY idx_create_time (create_time) USING BTREE,
+    KEY idx_update_time (update_time) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '好友表'
+  ROW_FORMAT = DYNAMIC;
+
+# 用户申请表
+DROP TABLE IF EXISTS user_apply;
+CREATE TABLE user_apply
+(
+    id            BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    apply_user    BIGINT(20)          NOT NULL COMMENT '申请人ID',
+    apply_type    TINYINT             NOT NULL COMMENT '申请类型（1-加好友、2-加群聊）',
+    target_user   BIGINT(20)          NOT NULL COMMENT '接收人ID',
+    apply_content VARCHAR(256)        NOT NULL COMMENT '申请内容',
+    apply_status  TINYINT             NOT NULL DEFAULT 0 COMMENT '申请状态（0-待审批、1-同意、2-拒绝）',
+    read_status   TINYINT             NOT NULL COMMENT '阅读状态（0-未读、1-已读）',
+    is_delete     TINYINT(4)          NOT NULL DEFAULT 0 COMMENT '是否删除（0-正常, 1-删除）',
+    edit_time     DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '编辑时间',
+    create_time   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    KEY idx_apply_user_target_user (apply_user, target_user) USING BTREE,
+    KEY idx_target_user_read_status (target_user, read_status) USING BTREE,
+    KEY target_user (target_user) USING BTREE,
+    KEY idx_create_time (create_time) USING BTREE,
+    KEY idx_update_time (update_time) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '用户申请表'
+  ROW_FORMAT = DYNAMIC;

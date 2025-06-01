@@ -57,6 +57,11 @@ public class UserInfoResp implements Serializable {
 	private String userProfile;
 
 	/**
+	 * 用户性别（0-男, 1-女, 2-无）
+	 */
+	private Integer userSex;
+
+	/**
 	 * 微信OpenId
 	 */
 	private String wxOpenId;

@@ -2,7 +2,7 @@ package icu.baolong.social.module.user.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import icu.baolong.social.cache.ItemsCache;
-import icu.baolong.social.common.function.lock.RedissonLock;
+import icu.baolong.social.function.lock.RedissonLock;
 import icu.baolong.social.module.sys.domain.enums.RepeatStatusEnum;
 import icu.baolong.social.module.user.dao.UserBackpackDao;
 import icu.baolong.social.module.user.service.UserBackpackService;

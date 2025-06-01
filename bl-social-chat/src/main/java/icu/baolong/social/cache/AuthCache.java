@@ -3,7 +3,7 @@ package icu.baolong.social.cache;
 import cn.hutool.core.collection.CollUtil;
 import icu.baolong.social.auth.dto.AuthDTO;
 import icu.baolong.social.common.utils.RedisUtil;
-import icu.baolong.social.entity.constants.KeyConstant;
+import icu.baolong.social.common.constants.KeyConstant;
 import icu.baolong.social.module.sys.dao.RolePermissionDao;
 import icu.baolong.social.module.sys.dao.SysPermissionDao;
 import icu.baolong.social.module.sys.dao.SysRoleDao;
@@ -74,10 +74,10 @@ public class AuthCache {
 		Set<String> permSignList = permissionList.stream().map(SysPermission::getPermSign).collect(Collectors.toSet());
 		// 组装树状结构
 		Map<Long, List<RolePermission>> rolePermMap = rolePermissions.stream().collect(Collectors.groupingBy(RolePermission::getRoleId));
-		Map<Long, String> permMap = permissionList.stream().collect(Collectors.toMap(SysPermission::getId, SysPermission::getPermSign));
+		Map<Long, String> permMap = permissionList.stream().collect(Collectors.toMap(SysPermission::getPermId, SysPermission::getPermSign));
 		List<AuthDTO> roleTree = new ArrayList<>();
 		roleList.forEach(role -> {
-			List<RolePermission> treeRolePermList = rolePermMap.get(role.getId());
+			List<RolePermission> treeRolePermList = rolePermMap.get(role.getRoleId());
 			List<AuthDTO> permTree = new ArrayList<>();
 			for (RolePermission permission : treeRolePermList) {
 				permTree.add(AuthDTO.builder()
@@ -86,7 +86,7 @@ public class AuthCache {
 						.build());
 			}
 			roleTree.add(AuthDTO.builder()
-					.roleId(role.getId())
+					.roleId(role.getRoleId())
 					.roleSign(role.getRoleSign())
 					.permTree(permTree)
 					.build());

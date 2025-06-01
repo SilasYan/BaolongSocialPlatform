@@ -87,7 +87,7 @@ public class IpManager implements DisposableBean {
 				ipInfo.setLastLoginIpDetail(ipDetail);
 			}
 			User updateUser = new User();
-			updateUser.setId(userId);
+			updateUser.setUserId(userId);
 			updateUser.setIpInfo(ipInfo);
 			boolean result = userDao.updateById(updateUser);
 			if (result) {

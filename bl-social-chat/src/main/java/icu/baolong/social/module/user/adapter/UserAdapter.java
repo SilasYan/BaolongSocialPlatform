@@ -1,9 +1,10 @@
 package icu.baolong.social.module.user.adapter;
 
 import cn.hutool.core.util.ObjectUtil;
-import icu.baolong.social.common.entity.enums.BoolEnum;
+import icu.baolong.social.common.enums.BoolEnum;
 import icu.baolong.social.module.user.domain.enums.UserSexEnum;
 import icu.baolong.social.module.user.domain.response.UserBadgeResp;
+import icu.baolong.social.module.user.domain.response.UserInfoResp;
 import icu.baolong.social.repository.items.entity.Items;
 import icu.baolong.social.repository.user.entity.User;
 import icu.baolong.social.repository.user.entity.UserBackpack;
@@ -21,6 +22,21 @@ import java.util.stream.Collectors;
  * @author Silas Yan 2025-05-24 19:17
  */
 public class UserAdapter {
+
+	public static UserInfoResp buildUserInfoResp(User user) {
+		return UserInfoResp.builder()
+				.userId(user.getUserId())
+				.userAccount(user.getUserAccount())
+				.userEmail(user.getUserEmail())
+				.userPhone(user.getUserPhone())
+				.userName(user.getUserName())
+				.userAvatar(user.getUserAvatar())
+				.userProfile(user.getUserProfile())
+				.userSex(user.getUserSex())
+				.wxOpenId(user.getWxOpenId())
+				.shareCode(user.getShareCode())
+				.build();
+	}
 
 	/**
 	 * 生成默认用户
@@ -67,13 +83,13 @@ public class UserAdapter {
 		Set<Long> ownBadgeIds = userBackpacks.stream().map(UserBackpack::getItemId).collect(Collectors.toSet());
 		return badgeList.stream()
 				.map(badge -> UserBadgeResp.builder()
-						.badgeId(badge.getId())
+						.badgeId(badge.getItemId())
 						.badgeName(badge.getItemName())
 						.badgeDesc(badge.getItemDesc())
 						.badgeImage(badge.getItemImage())
-						.obtainTime(ownBadgeMap.get(badge.getId()) != null ? ownBadgeMap.get(badge.getId()).getCreateTime() : null)
-						.ownStatus(BoolEnum.is(ownBadgeIds.contains(badge.getId())))
-						.wearStatus(BoolEnum.is(Objects.equals(user.getBadgeId(), badge.getId())))
+						.obtainTime(ownBadgeMap.get(badge.getItemId()) != null ? ownBadgeMap.get(badge.getItemId()).getCreateTime() : null)
+						.ownStatus(BoolEnum.is(ownBadgeIds.contains(badge.getItemId())))
+						.wearStatus(BoolEnum.is(Objects.equals(user.getBadgeId(), badge.getItemId())))
 						.build())
 				.sorted(Comparator.comparing(UserBadgeResp::getWearStatus, Comparator.reverseOrder())
 						.thenComparing(UserBadgeResp::getOwnStatus, Comparator.reverseOrder()))

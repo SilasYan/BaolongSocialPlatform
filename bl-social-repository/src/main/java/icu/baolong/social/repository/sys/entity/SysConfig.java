@@ -27,8 +27,8 @@ public class SysConfig implements Serializable {
 	/**
 	 * 配置ID
 	 */
-	@TableId(type = IdType.AUTO)
-	private Long id;
+	@TableId(type = IdType.AUTO, value = "id")
+	private Long configId;
 
 	/**
 	 * 配置名称

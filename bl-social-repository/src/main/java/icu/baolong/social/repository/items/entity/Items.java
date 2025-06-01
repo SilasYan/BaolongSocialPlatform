@@ -27,8 +27,8 @@ public class Items implements Serializable {
 	/**
 	 * 物品ID
 	 */
-	@TableId(type = IdType.AUTO)
-	private Long id;
+	@TableId(type = IdType.AUTO, value = "id")
+	private Long itemId;
 
 	/**
 	 * 物品类型（0-改名卡, 1-徽章, 2-头像框）

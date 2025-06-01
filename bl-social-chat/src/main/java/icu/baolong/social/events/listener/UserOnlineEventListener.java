@@ -25,19 +25,19 @@ public class UserOnlineEventListener {
 	/**
 	 * 监听用户上线, 刷新IP信息
 	 *
-	 * @param userEvent 用户事件
+	 * @param event 事件对象
 	 */
 	@Async
 	@EventListener(classes = UserOnlineEventPublisher.class)
-	public void refreshIp(UserOnlineEventPublisher userEvent) {
-		User user = userEvent.getUser();
+	public void refreshIp(UserOnlineEventPublisher event) {
+		User user = event.getUser();
 		User updateUser = new User();
-		updateUser.setId(user.getId());
+		updateUser.setUserId(user.getUserId());
 		updateUser.setLastLoginTime(user.getLastLoginTime());
 		updateUser.setIpInfo(user.getIpInfo());
 		updateUser.setOnlineStatus(OnlineStatusEnum.ONLINE.getKey());
 		userDao.updateById(updateUser);
 		// 刷新IP信息
-		ipManager.refreshIpInfo(user.getId(), 3);
+		ipManager.refreshIpInfo(user.getUserId(), 3);
 	}
 }

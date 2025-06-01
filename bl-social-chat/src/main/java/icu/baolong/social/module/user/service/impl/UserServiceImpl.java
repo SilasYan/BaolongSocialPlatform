@@ -7,17 +7,16 @@ import cn.hutool.core.util.StrUtil;
 import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
 import icu.baolong.social.cache.ItemsCache;
-import icu.baolong.social.common.converter.ConvertUtils;
 import icu.baolong.social.common.utils.ServletUtil;
-import icu.baolong.social.entity.constants.CacheConstant;
-import icu.baolong.social.entity.constants.KeyConstant;
-import icu.baolong.social.entity.constants.TextConstant;
+import icu.baolong.social.common.constants.CacheConstant;
+import icu.baolong.social.common.constants.KeyConstant;
+import icu.baolong.social.common.constants.TextConstant;
 import icu.baolong.social.common.exception.BusinessException;
 import icu.baolong.social.common.exception.ThrowUtil;
-import icu.baolong.social.events.UserBlackPublisher;
+import icu.baolong.social.events.UserBlackEventPublisher;
 import icu.baolong.social.events.UserRegisterEventPublisher;
 import icu.baolong.social.manager.email.EmailManager;
-import icu.baolong.social.common.response.RespCode;
+import icu.baolong.social.common.base.response.RespCode;
 import icu.baolong.social.common.utils.RedisUtil;
 import icu.baolong.social.module.blacklist.dao.BlacklistDao;
 import icu.baolong.social.module.blacklist.domain.enums.BlackTypeEnum;
@@ -178,7 +177,7 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		// 记录登录态, 并把当前用户信息放入到redis中, 7天过期
-		Long userId = user.getId();
+		Long userId = user.getUserId();
 		StpUtil.login(userId);
 		redisUtil.set(String.format(KeyConstant.PREFIX_USER_INFO, userId), user, 7, TimeUnit.DAYS);
 		// 异步记录日志
@@ -223,7 +222,7 @@ public class UserServiceImpl implements UserService {
 		Long userId = StpUtil.getLoginIdAsLong();
 		User user = userDao.getById(userId);
 		ThrowUtil.tif(ObjectUtil.isNull(user), "用户不存在");
-		return ConvertUtils.from(UserInfoResp.class, user, "userId");
+		return UserAdapter.buildUserInfoResp(user);
 	}
 
 	/**
@@ -234,7 +233,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public User getUserByUserId(Long userId) {
-		return userDao.getOne(userDao.lambdaQueryWrapper().eq(User::getId, userId));
+		return userDao.getOne(userDao.lambdaQueryWrapper().eq(User::getUserId, userId));
 	}
 
 	/**
@@ -325,7 +324,7 @@ public class UserServiceImpl implements UserService {
 		ThrowUtil.tif(ObjectUtil.isNotNull(user), "名称已被占用啦~");
 		// 获取是否有改名卡
 		Items items = itemsCache.getItemsListByType(ItemTypeEnum.NAME_CHANGE_CARD.getKey()).getFirst();
-		UserBackpack userBackpack = userBackpackDao.getOneValidNameChangeCard(userId, items.getId());
+		UserBackpack userBackpack = userBackpackDao.getOneValidNameChangeCard(userId, items.getItemId());
 		ThrowUtil.tif(ObjectUtil.isNull(userBackpack), "暂时没有改名卡, 请联系管理员获取~");
 		// 操作数据库, 使用事务
 		transactionTemplate.execute(status -> {
@@ -351,7 +350,7 @@ public class UserServiceImpl implements UserService {
 		// 获取所有徽章
 		List<Items> badgeList = itemsCache.getItemsListByType(ItemTypeEnum.BADGE.getKey());
 		// 获取当前用户徽章
-		List<UserBackpack> userBackpacks = userBackpackDao.getBadgeListByUserIdAndItemIds(userId, badgeList.stream().map(Items::getId).toList());
+		List<UserBackpack> userBackpacks = userBackpackDao.getBadgeListByUserIdAndItemIds(userId, badgeList.stream().map(Items::getItemId).toList());
 		// 获取当前用户佩戴的徽章
 		User user = this.getUserByUserId(userId);
 		return UserAdapter.buildUserBadgeRespList(user, badgeList, userBackpacks);
@@ -394,7 +393,7 @@ public class UserServiceImpl implements UserService {
 			handleBlack(loginUserId, BlackTypeEnum.IP.getKey(), ipInfo.getLastLoginIp());
 		}
 		// 发布事件
-		eventPublisher.publishEvent(new UserBlackPublisher(this, user));
+		eventPublisher.publishEvent(new UserBlackEventPublisher(this, user));
 	}
 
 	/**

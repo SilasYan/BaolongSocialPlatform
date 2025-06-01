@@ -2,8 +2,6 @@ package icu.baolong.social.common.thread;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.ThreadFactory;
-
 /**
  * 异步线程内部未捕获异常处理
  *

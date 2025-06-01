@@ -3,7 +3,7 @@ package icu.baolong.social.common.exception;
 import cn.hutool.core.lang.RegexPool;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import icu.baolong.social.common.response.RespCode;
+import icu.baolong.social.common.base.response.RespCode;
 
 /**
  * 异常工具类
