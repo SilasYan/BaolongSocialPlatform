@@ -1,7 +1,7 @@
 package icu.baolong.social.service.weixin.service.impl;
 
 import icu.baolong.social.common.utils.RedisUtil;
-import icu.baolong.social.common.constants.KeyConstant;
+import icu.baolong.social.constants.KeyConstant;
 import icu.baolong.social.module.user.service.UserService;
 import icu.baolong.social.service.websocket.service.WebSocketService;
 import icu.baolong.social.service.weixin.builder.TextBuilder;

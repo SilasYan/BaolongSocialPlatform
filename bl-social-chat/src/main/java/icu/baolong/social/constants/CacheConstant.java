@@ -1,4 +1,4 @@
-package icu.baolong.social.common.constants;
+package icu.baolong.social.constants;
 
 /**
  * 缓存常量

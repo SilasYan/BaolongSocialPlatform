@@ -10,7 +10,7 @@ import icu.baolong.social.common.base.page.CursorResponse;
 import icu.baolong.social.common.base.page.PageResponse;
 import icu.baolong.social.common.base.response.BaseResponse;
 import icu.baolong.social.common.base.response.Result;
-import icu.baolong.social.common.constants.TextConstant;
+import icu.baolong.social.constants.TextConstant;
 import icu.baolong.social.module.friend.domain.request.ApproveFriendApplyReq;
 import icu.baolong.social.module.friend.domain.request.FriendApplyQueryReq;
 import icu.baolong.social.module.friend.domain.request.FriendAddApplyReq;

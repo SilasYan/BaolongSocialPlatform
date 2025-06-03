@@ -4,7 +4,7 @@ import cn.hutool.json.JSONUtil;
 import icu.baolong.social.common.exception.BusinessException;
 import icu.baolong.social.common.base.response.RespCode;
 import icu.baolong.social.common.utils.RedisUtil;
-import icu.baolong.social.common.constants.KeyConstant;
+import icu.baolong.social.constants.KeyConstant;
 import icu.baolong.social.module.user.service.UserService;
 import icu.baolong.social.repository.user.entity.User;
 import icu.baolong.social.service.websocket.service.WebSocketService;

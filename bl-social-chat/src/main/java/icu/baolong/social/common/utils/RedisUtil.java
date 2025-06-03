@@ -217,6 +217,18 @@ public class RedisUtil {
 		return ops.get(key);
 	}
 
+	/**
+	 * 批量获取缓存
+	 *
+	 * @param keys 键集合
+	 * @param <T>  泛型
+	 * @return 值（任意类型）
+	 */
+	public <T> List<T> multiGet(final Collection<String> keys, final Class<T> clazz) {
+		ValueOperations<String, T> ops = redisTemplate.opsForValue();
+		return ops.multiGet(keys);
+	}
+
 	// endregion
 
 	// region Hash 操作对象

@@ -9,7 +9,7 @@ import icu.baolong.social.common.constants.BaseConstant;
 import icu.baolong.social.common.exception.BusinessException;
 import icu.baolong.social.function.limit.Limit;
 import icu.baolong.social.function.limit.LimitType;
-import icu.baolong.social.common.constants.TextConstant;
+import icu.baolong.social.constants.TextConstant;
 import icu.baolong.social.common.exception.ThrowUtil;
 import icu.baolong.social.common.base.response.BaseResponse;
 import icu.baolong.social.common.base.response.Result;

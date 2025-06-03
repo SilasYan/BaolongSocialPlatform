@@ -1,4 +1,4 @@
-package icu.baolong.social.common.enums;
+package icu.baolong.social.constants;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
