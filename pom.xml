@@ -12,7 +12,6 @@
     <modules>
         <module>bl-social-chat</module>
         <module>bl-social-tools</module>
-        <module>bl-social-repository</module>
     </modules>
 
     <properties>
@@ -23,6 +22,7 @@
         <mybatisplus.version>3.5.12</mybatisplus.version>
         <redisson.version>3.41.0</redisson.version>
         <netty.version>4.2.0.Final</netty.version>
+        <rocketmq.version>2.2.2</rocketmq.version>
         <satoken.version>1.42.0</satoken.version>
         <hutool.version>5.8.38</hutool.version>
         <knife4j.version>4.4.0</knife4j.version>
@@ -68,6 +68,13 @@
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
                 <version>${netty.version}</version>
+            </dependency>
+
+            <!-- RocketMQ -->
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq.version}</version>
             </dependency>
 
             <!-- Sa-Token 权限认证 -->

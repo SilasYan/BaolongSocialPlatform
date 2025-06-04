@@ -1,8 +1,8 @@
 package icu.baolong.social.module.friend.service;
 
-import icu.baolong.social.common.base.page.CursorRequest;
-import icu.baolong.social.common.base.page.CursorResponse;
-import icu.baolong.social.common.base.page.PageResponse;
+import icu.baolong.social.base.page.CursorRequest;
+import icu.baolong.social.base.page.CursorResponse;
+import icu.baolong.social.base.page.PageResponse;
 import icu.baolong.social.module.friend.domain.request.FriendApplyQueryReq;
 import icu.baolong.social.module.friend.domain.request.FriendAddApplyReq;
 import icu.baolong.social.module.friend.domain.response.FriendApplyResp;

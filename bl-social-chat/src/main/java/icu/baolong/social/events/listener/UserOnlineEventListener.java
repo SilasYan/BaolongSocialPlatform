@@ -3,7 +3,7 @@ package icu.baolong.social.events.listener;
 import icu.baolong.social.events.UserOnlineEventPublisher;
 import icu.baolong.social.manager.ip.IpManager;
 import icu.baolong.social.module.user.dao.UserDao;
-import icu.baolong.social.module.user.domain.enums.OnlineStatusEnum;
+import icu.baolong.social.module.user.enums.OnlineStatusEnum;
 import icu.baolong.social.repository.user.entity.User;
 import jakarta.annotation.Resource;
 import org.springframework.context.event.EventListener;

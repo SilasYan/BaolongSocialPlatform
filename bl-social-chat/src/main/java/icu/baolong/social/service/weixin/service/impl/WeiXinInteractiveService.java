@@ -1,9 +1,9 @@
 package icu.baolong.social.service.weixin.service.impl;
 
 import icu.baolong.social.common.exception.BusinessException;
-import icu.baolong.social.common.base.response.RespCode;
+import icu.baolong.social.base.response.RespCode;
 import icu.baolong.social.common.utils.RedisUtil;
-import icu.baolong.social.constants.KeyConstant;
+import icu.baolong.social.base.constants.KeyConstant;
 import icu.baolong.social.service.weixin.service.WeiXinService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

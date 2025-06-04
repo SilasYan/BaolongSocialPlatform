@@ -1,8 +1,8 @@
 package icu.baolong.social.events.listener;
 
 import cn.hutool.json.JSONArray;
-import icu.baolong.social.constants.CacheConstant;
-import icu.baolong.social.constants.BusinessTypeEnum;
+import icu.baolong.social.base.constants.CacheConstant;
+import icu.baolong.social.base.constants.BusinessTypeEnum;
 import icu.baolong.social.events.UserRegisterEventPublisher;
 import icu.baolong.social.module.sys.service.SysConfigService;
 import icu.baolong.social.module.user.service.UserBackpackService;

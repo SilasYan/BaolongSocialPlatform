@@ -1,9 +1,21 @@
 package icu.baolong.social.module.message.service;
 
+import icu.baolong.social.module.message.domain.request.MessageReq;
+import icu.baolong.social.module.message.domain.response.MessageResp;
+
 /**
  * 消息表 (message) - 服务接口
  *
  * @author Baolong 2025-05-30 23:54:59
  */
 public interface MessageService {
+
+	/**
+	 * 发送消息
+	 *
+	 * @param userId     登录用户ID
+	 * @param messageReq 消息请求
+	 * @return 消息响应
+	 */
+	MessageResp sendMessage(Long userId, MessageReq messageReq);
 }

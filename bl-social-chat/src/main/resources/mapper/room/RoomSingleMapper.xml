@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="icu.baolong.social.repository.room.mapper.RoomSingleMapper">
+
+    <resultMap id="BaseResultMap" type="icu.baolong.social.repository.room.entity.RoomSingle">
+        <id property="singleId" column="id" jdbcType="BIGINT"/>
+        <result property="roomId" column="room_id" jdbcType="BIGINT"/>
+        <result property="userId1" column="user_id1" jdbcType="BIGINT"/>
+        <result property="userId2" column="user_id2" jdbcType="BIGINT"/>
+        <result property="roomKey" column="room_key" jdbcType="VARCHAR"/>
+        <result property="roomStatus" column="room_status" jdbcType="TINYINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,room_id,user_id1,
+        user_id2,room_key,room_status,
+        create_time,update_time
+    </sql>
+</mapper>

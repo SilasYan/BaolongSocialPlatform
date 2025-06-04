@@ -1,6 +1,6 @@
 package icu.baolong.social.cache;
 
-import icu.baolong.social.constants.KeyConstant;
+import icu.baolong.social.base.constants.KeyConstant;
 import icu.baolong.social.common.utils.RedisUtil;
 import icu.baolong.social.function.cache.AbstractRedisCache;
 import icu.baolong.social.module.blacklist.dao.BlacklistDao;

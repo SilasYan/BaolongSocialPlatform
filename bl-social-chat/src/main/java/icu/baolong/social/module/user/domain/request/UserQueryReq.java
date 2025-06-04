@@ -1,6 +1,6 @@
 package icu.baolong.social.module.user.domain.request;
 
-import icu.baolong.social.common.base.page.PageRequest;
+import icu.baolong.social.base.page.PageRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

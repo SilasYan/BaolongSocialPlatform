@@ -2,9 +2,9 @@ package icu.baolong.social.module.user.dao;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import icu.baolong.social.module.user.domain.enums.ApplyStatusEnum;
-import icu.baolong.social.module.user.domain.enums.ApplyTypeEnum;
-import icu.baolong.social.module.user.domain.enums.ReadStatusEnum;
+import icu.baolong.social.module.user.enums.ApplyStatusEnum;
+import icu.baolong.social.module.user.enums.ApplyTypeEnum;
+import icu.baolong.social.module.user.enums.ReadStatusEnum;
 import icu.baolong.social.repository.user.entity.UserApply;
 import icu.baolong.social.repository.user.mapper.UserApplyMapper;
 import org.springframework.stereotype.Repository;

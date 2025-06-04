@@ -1,7 +1,7 @@
 package icu.baolong.social.module.user.dao;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import icu.baolong.social.module.user.domain.enums.ItemUseStatusEnum;
+import icu.baolong.social.module.user.enums.ItemUseStatusEnum;
 import icu.baolong.social.repository.user.entity.UserBackpack;
 import icu.baolong.social.repository.user.mapper.UserBackpackMapper;
 import org.springframework.stereotype.Repository;

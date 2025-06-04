@@ -1,17 +1,9 @@
 package icu.baolong.social.module.user.adapter;
 
-import cn.hutool.core.util.ObjectUtil;
-import icu.baolong.social.module.friend.domain.response.FriendResp;
-import icu.baolong.social.module.user.domain.enums.ApplyStatusEnum;
-import icu.baolong.social.module.user.domain.enums.ApplyTypeEnum;
-import icu.baolong.social.module.user.domain.enums.ReadStatusEnum;
-import icu.baolong.social.repository.friend.entity.Friend;
-import icu.baolong.social.repository.user.entity.User;
+import icu.baolong.social.module.user.enums.ApplyStatusEnum;
+import icu.baolong.social.module.user.enums.ApplyTypeEnum;
+import icu.baolong.social.module.user.enums.ReadStatusEnum;
 import icu.baolong.social.repository.user.entity.UserApply;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 用户申请适配器

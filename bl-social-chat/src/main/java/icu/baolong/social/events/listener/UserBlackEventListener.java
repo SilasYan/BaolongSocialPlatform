@@ -4,7 +4,7 @@ import icu.baolong.social.events.UserBlackEventPublisher;
 import icu.baolong.social.service.websocket.adapter.WSAdapter;
 import icu.baolong.social.service.websocket.service.WebSocketService;
 import icu.baolong.social.module.user.dao.UserDao;
-import icu.baolong.social.module.user.domain.enums.UserDisabledEnum;
+import icu.baolong.social.module.user.enums.UserDisabledEnum;
 import icu.baolong.social.repository.user.entity.User;
 import jakarta.annotation.Resource;
 import org.springframework.scheduling.annotation.Async;

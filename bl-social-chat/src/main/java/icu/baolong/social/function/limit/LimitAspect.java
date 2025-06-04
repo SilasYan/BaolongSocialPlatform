@@ -1,7 +1,7 @@
 package icu.baolong.social.function.limit;
 
 import icu.baolong.social.common.exception.BusinessException;
-import icu.baolong.social.common.base.response.RespCode;
+import icu.baolong.social.base.response.RespCode;
 import icu.baolong.social.common.utils.ServletUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;

@@ -12,4 +12,16 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class RoomGroupDao extends ServiceImpl<RoomGroupMapper, RoomGroup> {
+
+	/**
+	 * 根据房间ID获取群聊房间
+	 *
+	 * @param roomId 房间ID
+	 * @return 群聊房间
+	 */
+	public RoomGroup getRoomGroupByRoomId(Long roomId) {
+		return this.lambdaQuery()
+				.eq(RoomGroup::getRoomId, roomId)
+				.one();
+	}
 }

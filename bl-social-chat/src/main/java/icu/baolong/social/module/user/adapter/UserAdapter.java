@@ -2,7 +2,7 @@ package icu.baolong.social.module.user.adapter;
 
 import cn.hutool.core.util.ObjectUtil;
 import icu.baolong.social.common.enums.BoolEnum;
-import icu.baolong.social.module.user.domain.enums.UserSexEnum;
+import icu.baolong.social.module.user.enums.UserSexEnum;
 import icu.baolong.social.module.user.domain.response.UserBadgeResp;
 import icu.baolong.social.module.user.domain.response.UserInfoResp;
 import icu.baolong.social.repository.items.entity.Items;

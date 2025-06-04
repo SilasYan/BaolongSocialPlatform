@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import icu.baolong.social.common.base.page.CursorRequest;
-import icu.baolong.social.common.base.page.CursorResponse;
+import icu.baolong.social.base.page.CursorRequest;
+import icu.baolong.social.base.page.CursorResponse;
 
 import java.util.Date;
 import java.util.List;

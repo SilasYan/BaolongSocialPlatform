@@ -2,7 +2,7 @@ package icu.baolong.social.service.websocket.domain.enums;
 
 import icu.baolong.social.service.websocket.domain.response.CaptchaResp;
 import icu.baolong.social.service.websocket.domain.response.LoginSuccessResp;
-import icu.baolong.social.service.websocket.domain.response.MessageResp;
+import icu.baolong.social.module.message.domain.response.MessageResp;
 import icu.baolong.social.service.websocket.domain.response.OnlineOfflineNotifyResp;
 import icu.baolong.social.service.websocket.domain.response.LoginQRCodeResp;
 import lombok.AllArgsConstructor;

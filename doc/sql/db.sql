@@ -315,10 +315,10 @@ CREATE TABLE room
   ROW_FORMAT = DYNAMIC;
 
 # 单聊房间表
-DROP TABLE IF EXISTS room_friend;
-CREATE TABLE room_friend
+DROP TABLE IF EXISTS room_single;
+CREATE TABLE room_single
 (
-    id          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    id          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '单聊ID',
     room_id     BIGINT(20)          NOT NULL COMMENT '房间ID',
     user_id1    BIGINT(20)          NOT NULL COMMENT '用户ID1（较小的ID）',
     user_id2    BIGINT(20)          NOT NULL COMMENT '用户ID2（较大的ID）',
@@ -340,7 +340,7 @@ CREATE TABLE room_friend
 DROP TABLE IF EXISTS room_group;
 CREATE TABLE room_group
 (
-    id           BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    id           BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '群聊ID',
     room_id      BIGINT(20)          NOT NULL COMMENT '房间ID',
     leader_id    BIGINT(20)          NOT NULL COMMENT '群主ID',
     group_name   VARCHAR(128)        NOT NULL COMMENT '群名称',
@@ -359,9 +359,9 @@ CREATE TABLE room_group
   COLLATE = utf8mb4_unicode_ci COMMENT = '群聊房间表'
   ROW_FORMAT = DYNAMIC;
 
-# 群成员表
-DROP TABLE IF EXISTS group_member;
-CREATE TABLE group_member
+# 群聊成员表
+DROP TABLE IF EXISTS room_group_member;
+CREATE TABLE room_group_member
 (
     id          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
     group_id    BIGINT(20)          NOT NULL COMMENT '群聊ID',
@@ -375,7 +375,7 @@ CREATE TABLE group_member
     KEY idx_update_time (update_time) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci COMMENT = '群成员表'
+  COLLATE = utf8mb4_unicode_ci COMMENT = '群聊成员表'
   ROW_FORMAT = DYNAMIC;
 
 # 房间会话表

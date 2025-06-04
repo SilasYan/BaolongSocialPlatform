@@ -1,7 +1,6 @@
 package icu.baolong.social.module.sys.domain.enums;
 
 import icu.baolong.social.common.exception.BusinessException;
-import icu.baolong.social.module.user.domain.enums.UserDisabledEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

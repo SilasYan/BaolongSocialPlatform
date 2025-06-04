@@ -1,6 +1,6 @@
 package icu.baolong.social.module.friend.domain.response;
 
-import icu.baolong.social.module.user.domain.enums.OnlineStatusEnum;
+import icu.baolong.social.module.user.enums.OnlineStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

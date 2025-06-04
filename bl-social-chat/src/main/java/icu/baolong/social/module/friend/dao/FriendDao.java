@@ -1,8 +1,8 @@
 package icu.baolong.social.module.friend.dao;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import icu.baolong.social.common.base.page.CursorRequest;
-import icu.baolong.social.common.base.page.CursorResponse;
+import icu.baolong.social.base.page.CursorRequest;
+import icu.baolong.social.base.page.CursorResponse;
 import icu.baolong.social.common.utils.CursorUtil;
 import icu.baolong.social.repository.friend.entity.Friend;
 import icu.baolong.social.repository.friend.mapper.FriendMapper;

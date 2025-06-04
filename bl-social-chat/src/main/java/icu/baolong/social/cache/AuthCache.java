@@ -3,7 +3,7 @@ package icu.baolong.social.cache;
 import cn.hutool.core.collection.CollUtil;
 import icu.baolong.social.auth.dto.AuthDTO;
 import icu.baolong.social.common.utils.RedisUtil;
-import icu.baolong.social.constants.KeyConstant;
+import icu.baolong.social.base.constants.KeyConstant;
 import icu.baolong.social.module.sys.dao.RolePermissionDao;
 import icu.baolong.social.module.sys.dao.SysPermissionDao;
 import icu.baolong.social.module.sys.dao.SysRoleDao;

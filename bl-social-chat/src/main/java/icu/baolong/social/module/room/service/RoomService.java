@@ -23,4 +23,12 @@ public interface RoomService {
 	 * @param userIdList 用户列表, 必须有两个用户
 	 */
 	void disableFriendRoom(List<Long> userIdList);
+
+	/**
+	 * 校验房间
+	 *
+	 * @param userId 用户ID
+	 * @param roomId 房间ID
+	 */
+	void checkRoom(Long userId, Long roomId);
 }

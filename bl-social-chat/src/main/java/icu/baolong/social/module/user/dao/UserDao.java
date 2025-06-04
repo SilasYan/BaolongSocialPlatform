@@ -5,7 +5,7 @@ import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import icu.baolong.social.common.base.page.PageRequest;
+import icu.baolong.social.base.page.PageRequest;
 import icu.baolong.social.common.utils.LambdaUtil;
 import icu.baolong.social.repository.user.entity.User;
 import icu.baolong.social.repository.user.mapper.UserMapper;
