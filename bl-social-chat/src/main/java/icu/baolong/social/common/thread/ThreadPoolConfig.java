@@ -24,6 +24,8 @@ public class ThreadPoolConfig implements AsyncConfigurer {
 
 	public static final String PUSH_EXECUTOR = "pushExecutor";
 
+	public static final String MESSAGE_EXECUTOR = "messageExecutor";
+
 	/**
 	 * 默认/主线程池
 	 */
@@ -104,6 +106,26 @@ public class ThreadPoolConfig implements AsyncConfigurer {
 		executor.setThreadNamePrefix("Push-Executor-");
 		// 拒绝策略: 满了直接丢弃
 		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+		executor.setThreadFactory(new CustomThreadFactory(executor));
+		executor.setWaitForTasksToCompleteOnShutdown(true);
+		executor.initialize();
+		return executor;
+	}
+
+	/**
+	 * 消息线程池
+	 *
+	 * @return 线程池任务执行器
+	 */
+	@Bean(name = MESSAGE_EXECUTOR)
+	public ThreadPoolTaskExecutor messageThreadPool() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(10);
+		executor.setMaxPoolSize(10);
+		executor.setQueueCapacity(100);
+		executor.setThreadNamePrefix("Message-Executor-");
+		// 拒绝策略: 满了直接丢弃
+		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 		executor.setThreadFactory(new CustomThreadFactory(executor));
 		executor.setWaitForTasksToCompleteOnShutdown(true);
 		executor.initialize();

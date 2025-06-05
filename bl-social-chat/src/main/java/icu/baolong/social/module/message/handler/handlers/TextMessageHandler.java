@@ -1,5 +1,6 @@
 package icu.baolong.social.module.message.handler.handlers;
 
+import icu.baolong.social.module.message.domain.response.TextMessageResp;
 import icu.baolong.social.module.message.enums.MessageTypeEnum;
 import icu.baolong.social.repository.message.entity.extra.TextMessageExtra;
 import icu.baolong.social.module.message.domain.response.MessageResp;
@@ -27,7 +28,7 @@ public class TextMessageHandler extends AbstractMessageHandler<TextMessageExtra>
 	/**
 	 * 校验消息
 	 *
-	 * @param userId 用户ID
+	 * @param userId 登录用户ID
 	 * @param body   消息体
 	 */
 	@Override
@@ -43,17 +44,34 @@ public class TextMessageHandler extends AbstractMessageHandler<TextMessageExtra>
 	 */
 	@Override
 	protected void fillMessage(Message message, TextMessageExtra body) {
-
+		message.setContent(body.getContent());
 	}
 
 	/**
 	 * 构建消息响应
 	 *
+	 * @param userId  登录用户ID
 	 * @param message 消息对象
 	 * @return 消息响应
 	 */
 	@Override
-	protected MessageResp buildMessageResp(Message message) {
-		return null;
+	public MessageResp buildMessageResp(Long userId, Message message) {
+		return MessageResp.builder()
+				.userId(userId)
+				.senderInfo(MessageResp.SenderInfo.builder()
+						.senderId(message.getSenderId())
+						.build())
+				.messageInfo(MessageResp.MessageInfo.builder()
+						.messageId(message.getMessageId())
+						.messageType(message.getMessageType())
+						.roomId(message.getRoomId())
+						.sendTime(message.getCreateTime())
+						.body(TextMessageResp.builder()
+								.content(message.getContent())
+								.build())
+						.build())
+				.interactionInfo(MessageResp.InteractionInfo.builder()
+						.build())
+				.build();
 	}
 }

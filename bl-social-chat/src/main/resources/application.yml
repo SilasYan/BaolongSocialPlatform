@@ -100,6 +100,27 @@ wechat:
         # 接口配置里的EncodingAESKey值
         aesKey: ${baolong.social.wechat.mp.aesKey}
 
+################ RocketMQ 配置 ###############
+rocketmq:
+  name-server: ${baolong.social.rocketmq.name-server}
+  producer:
+    group: bl-social-chat-producer
+    # 发送消息超时时间（毫秒）
+    send-message-timeout: 3000
+    # 消息压缩阈值（单位：字节）
+    compress-message-body-threshold: 4096
+    # 同步发送消息时, 失败重试次数
+    retry-times-when-send-failed: 2
+    # 异步发送消息时, 失败重试次数
+    retry-times-when-send-async-failed: 2
+    # 发送消息给 Broker 时, 是否在失败后重试发送给其他 Broker
+    retry-next-server: false
+    access-key: ${baolong.social.rocketmq.access-key}
+    secret-key: ${baolong.social.rocketmq.secret-key}
+  consumer:
+    group: bl-social-chat-consumer
+    access-key: ${baolong.social.rocketmq.access-key}
+    secret-key: ${baolong.social.rocketmq.secret-key}
 
 ################ Sa-Token 配置 ###############
 sa-token:

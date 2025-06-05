@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * WebSocket响应类
  *
@@ -12,7 +15,7 @@ import lombok.Data;
  */
 @Builder
 @Data
-public class WSResp<T> {
+public class WSResp<T> implements Serializable {
 
 	/**
 	 * @see WSRespTypeEnum
@@ -22,4 +25,7 @@ public class WSResp<T> {
 
 	@Schema(description = "响应数据")
 	private T data;
+
+	@Serial
+	private static final long serialVersionUID = 1L;
 }

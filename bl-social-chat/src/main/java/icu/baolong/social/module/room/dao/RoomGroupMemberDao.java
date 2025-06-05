@@ -5,6 +5,8 @@ import icu.baolong.social.repository.room.entity.RoomGroupMember;
 import icu.baolong.social.repository.room.mapper.RoomGroupMemberMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * 群聊成员表 (room_group_member) - 持久化服务
  *
@@ -25,5 +27,17 @@ public class RoomGroupMemberDao extends ServiceImpl<RoomGroupMemberMapper, RoomG
 				.eq(RoomGroupMember::getUserId, userId)
 				.eq(RoomGroupMember::getGroupId, groupId)
 				.one();
+	}
+
+	/**
+	 * 根据群聊ID获取群聊成员信息
+	 *
+	 * @param groupId 群聊ID
+	 * @return 群聊成员信息
+	 */
+	public List<RoomGroupMember> getRoomGroupMemberByGroupId(Long groupId) {
+		return this.lambdaQuery()
+				.eq(RoomGroupMember::getGroupId, groupId)
+				.list();
 	}
 }

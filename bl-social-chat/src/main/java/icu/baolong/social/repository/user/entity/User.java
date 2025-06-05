@@ -117,6 +117,11 @@ public class User implements Serializable {
 	private Date lastLoginTime;
 
 	/**
+	 * 最后在线时间
+	 */
+	private Date lastOnlineTime;
+
+	/**
 	 * 连续签到天数
 	 */
 	private Integer checkInDays;

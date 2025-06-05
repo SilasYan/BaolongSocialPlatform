@@ -41,9 +41,9 @@ public class Message implements Serializable {
 	private Long senderId;
 
 	/**
-	 * 消息类型（0-正常文本、1-撤回消息）
+	 * 消息类型（1-正常文本、2-撤回消息、3-表情、4-图片、5-视频、6-语音、7-文件、8-系统）
 	 */
-	private Integer msgType;
+	private Integer messageType;
 
 	/**
 	 * 消息内容
@@ -63,7 +63,7 @@ public class Message implements Serializable {
 	/**
 	 * 消息状态（0-正常、1-删除）
 	 */
-	private Integer msgStatus;
+	private Integer messageStatus;
 
 	/**
 	 * 扩展信息

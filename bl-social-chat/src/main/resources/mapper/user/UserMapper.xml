@@ -23,6 +23,7 @@
                 javaType="icu.baolong.social.repository.user.entity.IpInfo"/>
         <result property="firstLoginTime" column="first_login_time" jdbcType="TIMESTAMP"/>
         <result property="lastLoginTime" column="last_login_time" jdbcType="TIMESTAMP"/>
+        <result property="lastOnlineTime" column="last_online_time" jdbcType="TIMESTAMP"/>
         <result property="checkInDays" column="check_in_days" jdbcType="INTEGER"/>
         <result property="lastCheckInTime" column="last_check_in_time" jdbcType="TIMESTAMP"/>
         <result property="isDisabled" column="is_disabled" jdbcType="TINYINT"/>
@@ -37,7 +38,7 @@
         user_email,user_phone,user_name,
         user_avatar,user_profile,user_sex,user_points,
         wx_open_id,share_code,badge_id,avatar_frame_id,online_status,ip_info,
-        first_login_time,last_login_time,check_in_days,last_check_in_time,
+        first_login_time,last_login_time,last_online_time,check_in_days,last_check_in_time,
         is_disabled,is_delete,edit_time,create_time,update_time
     </sql>
 </mapper>

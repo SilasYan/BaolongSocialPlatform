@@ -6,11 +6,11 @@
         <id property="messageId" column="id" jdbcType="BIGINT"/>
         <result property="roomId" column="room_id" jdbcType="BIGINT"/>
         <result property="senderId" column="sender_id" jdbcType="BIGINT"/>
-        <result property="msgType" column="msg_type" jdbcType="TINYINT"/>
+        <result property="messageType" column="message_type" jdbcType="TINYINT"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="replyId" column="reply_id" jdbcType="BIGINT"/>
         <result property="replyGap" column="reply_gap" jdbcType="INTEGER"/>
-        <result property="msgStatus" column="msg_status" jdbcType="TINYINT"/>
+        <result property="messageStatus" column="message_status" jdbcType="TINYINT"/>
         <result property="extendInfo" column="extend_info"
                 typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"
                 javaType="icu.baolong.social.repository.message.entity.ExtendInfo"/>
@@ -20,8 +20,8 @@
 
     <sql id="Base_Column_List">
         id,room_id,sender_id,
-        msg_type,content,reply_id,
-        reply_gap,msg_status,extend_info,
+        message_type,content,reply_id,
+        reply_gap,message_status,extend_info,
         create_time,update_time
     </sql>
 </mapper>

@@ -45,15 +45,15 @@ public abstract class AbstractMessageHandler<T> {
 	/**
 	 * 执行消息的方法
 	 *
-	 * @param userId 用户ID
-	 * @param t      消息请求
+	 * @param senderId 发送者ID
+	 * @param req      消息请求
 	 * @return 消息ID
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public Long execute(Long userId, MessageReq req) {
+	public Long executeSend(Long senderId, MessageReq req) {
 		T body = BeanUtil.toBean(req.getBody(), clazz);
-		this.checkMessage(userId, body);
-		Message message = MessageAdapter.buildMessage(userId, req);
+		this.checkMessage(senderId, body);
+		Message message = MessageAdapter.buildMessage(senderId, req);
 		this.fillMessage(message, body);
 		boolean result = messageDao.save(message);
 		ThrowUtil.tif(!result, "消息发送失败!");
@@ -63,7 +63,7 @@ public abstract class AbstractMessageHandler<T> {
 	/**
 	 * 校验消息
 	 *
-	 * @param userId 用户ID
+	 * @param userId 登录用户ID
 	 * @param body   消息体
 	 */
 	protected abstract void checkMessage(Long userId, T body);
@@ -79,8 +79,9 @@ public abstract class AbstractMessageHandler<T> {
 	/**
 	 * 构建消息响应
 	 *
+	 * @param userId  登录用户ID
 	 * @param message 消息对象
 	 * @return 消息响应
 	 */
-	protected abstract MessageResp buildMessageResp(Message message);
+	public abstract MessageResp buildMessageResp(Long userId, Message message);
 }

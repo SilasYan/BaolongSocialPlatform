@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "消息接口", description = "消息相关业务接口")
 @RestController
-@RequestMapping("/api/msg")
+@RequestMapping("/api/message")
 public class MessageController {
 	@Resource
 	private MessageService messageService;
@@ -34,7 +34,7 @@ public class MessageController {
 	public BaseResponse<MessageResp> sendMessage(@RequestBody MessageReq messageReq) {
 		ThrowUtil.nullIf(messageReq, TextConstant.ERROR_NULL_OBJECT);
 		ThrowUtil.tif(ObjectUtil.isNull(messageReq.getRoomId()), "房间号不能为空");
-		ThrowUtil.tif(ObjectUtil.isNull(messageReq.getMsgType()), "消息类型不能为空");
+		ThrowUtil.tif(ObjectUtil.isNull(messageReq.getMessageType()), "消息类型不能为空");
 		return Result.success(messageService.sendMessage(StpUtil.getLoginIdAsLong(), messageReq));
 	}
 

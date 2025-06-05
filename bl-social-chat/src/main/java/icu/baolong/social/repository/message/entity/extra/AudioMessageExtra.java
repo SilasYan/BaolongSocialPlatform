@@ -1,5 +1,6 @@
 package icu.baolong.social.repository.message.entity.extra;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
  *
  * @author Silas Yan 2025-06-03 20:33
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 public class AudioMessageExtra implements Serializable {
 

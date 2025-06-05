@@ -1,5 +1,6 @@
 package icu.baolong.social.service.websocket.adapter;
 
+import icu.baolong.social.module.message.domain.response.MessageResp;
 import icu.baolong.social.service.websocket.domain.response.BlackUserResp;
 import icu.baolong.social.repository.user.entity.User;
 import icu.baolong.social.service.websocket.domain.response.LoginAuthorizeResp;
@@ -79,6 +80,18 @@ public class WSAdapter {
 		return WSResp.<BlackUserResp>builder()
 				.type(WSRespTypeEnum.BLACK_USER.getKey())
 				.data(BlackUserResp.builder().userId(userId).build())
+				.build();
+	}
+
+	/**
+	 * 构建消息响应
+	 *
+	 * @return 消息响应
+	 */
+	public static WSResp<MessageResp> buildMessageResp(MessageResp messageResp) {
+		return WSResp.<MessageResp>builder()
+				.type(WSRespTypeEnum.MESSAGE.getKey())
+				.data(messageResp)
 				.build();
 	}
 }

@@ -1,10 +1,12 @@
 package icu.baolong.social.service.websocket.service;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import icu.baolong.social.events.UserOfflineEventPublisher;
 import icu.baolong.social.events.UserOnlineEventPublisher;
 import icu.baolong.social.service.websocket.domain.base.WSResp;
 import icu.baolong.social.service.websocket.utils.NettyUtils;
@@ -23,8 +25,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * WebSocket服务
@@ -56,6 +60,11 @@ public class WebSocketService {
 			.expireAfterWrite(Duration.ofMinutes(30)).maximumSize(1000L).build();
 
 	/**
+	 * 所有在线的用户
+	 */
+	private static final ConcurrentHashMap<Long, CopyOnWriteArrayList<Channel>> ONLINE_USER_MAP = new ConcurrentHashMap<>();
+
+	/**
 	 * 处理上线
 	 *
 	 * @param channel 管道
@@ -73,7 +82,16 @@ public class WebSocketService {
 	public void handleOffline(Channel channel) {
 		// 移除 当前 channel
 		CONNECT_INFO_MAP.remove(channel);
-		// TODO 用户下线
+		// 移除 当前 用户ID
+		ConnectEntity connectEntity = CONNECT_INFO_MAP.get(channel);
+		if (connectEntity != null && ObjectUtil.isNotNull(connectEntity.getUserId())) {
+			CopyOnWriteArrayList<Channel> channels = ONLINE_USER_MAP.get(connectEntity.getUserId());
+			if (CollUtil.isNotEmpty(channels)) {
+				channels.remove(channel);
+			}
+			// 发布下线事件
+			publishUserOfflineEvent(connectEntity.getUserId());
+		}
 	}
 
 	/**
@@ -145,6 +163,9 @@ public class WebSocketService {
 			ConnectEntity connectEntity = CONNECT_INFO_MAP.get(channel);
 			connectEntity.setUserId(userId);
 			User user = userService.getUserByUserId(userId);
+			// 存储当前用户ID
+			ONLINE_USER_MAP.putIfAbsent(userId, new CopyOnWriteArrayList<>());
+			ONLINE_USER_MAP.get(userId).add(channel);
 			// 发送消息给前端
 			PushUtils.pushMessage(channel, WSAdapter.buildLoginSuccessResp(token, user));
 			// 发布事件
@@ -167,6 +188,37 @@ public class WebSocketService {
 		}
 		user.setIpInfo(ipInfo);
 		eventPublisher.publishEvent(new UserOnlineEventPublisher(this, user));
+	}
+
+	/**
+	 * 发布用户下线事件
+	 *
+	 * @param userId 用户ID
+	 */
+	private void publishUserOfflineEvent(Long userId) {
+		User user = new User();
+		user.setUserId(userId);
+		user.setLastOnlineTime(new Date());
+		eventPublisher.publishEvent(new UserOfflineEventPublisher(this, user));
+	}
+
+	/**
+	 * 推送消息给某个用户
+	 *
+	 * @param userId 用户ID
+	 * @param wsResp 消息对象
+	 */
+	public void pushToUser(Long userId, WSResp<?> wsResp) {
+		CopyOnWriteArrayList<Channel> channels = ONLINE_USER_MAP.get(userId);
+		if (CollUtil.isEmpty(channels)) {
+			log.info("[WS]用户[{}]不在线", userId);
+			return;
+		}
+		channels.forEach(channel -> {
+			pushExecutor.execute(() -> {
+				PushUtils.pushMessage(channel, wsResp);
+			});
+		});
 	}
 
 	/**

@@ -38,4 +38,9 @@ public interface KeyConstant {
 	 * 用户权限 KEY 前缀
 	 */
 	String PREFIX_USER_AUTH = PREFIX + "user_auth:%s";
+
+	/**
+	 * 房间排序 KEY
+	 */
+	String PREFIX_ROOM_SORT = PREFIX + "room_sort";
 }

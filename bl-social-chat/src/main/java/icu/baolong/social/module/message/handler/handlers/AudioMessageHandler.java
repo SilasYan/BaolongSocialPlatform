@@ -27,7 +27,7 @@ public class AudioMessageHandler extends AbstractMessageHandler<AudioMessageExtr
 	/**
 	 * 校验消息
 	 *
-	 * @param userId 用户ID
+	 * @param userId 登录用户ID
 	 * @param body   消息体
 	 */
 	@Override
@@ -49,11 +49,12 @@ public class AudioMessageHandler extends AbstractMessageHandler<AudioMessageExtr
 	/**
 	 * 构建消息响应
 	 *
+	 * @param userId  登录用户ID
 	 * @param message 消息对象
 	 * @return 消息响应
 	 */
 	@Override
-	protected MessageResp buildMessageResp(Message message) {
+	public MessageResp buildMessageResp(Long userId, Message message) {
 		return null;
 	}
 }

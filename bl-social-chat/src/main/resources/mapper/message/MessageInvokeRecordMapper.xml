@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="icu.baolong.social.repository.message.mapper.MessageInvokeRecordMapper">
+
+    <resultMap id="BaseResultMap" type="icu.baolong.social.repository.message.entity.MessageInvokeRecord">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="snapshotParam" column="snapshot_param"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result property="invokeStatus" column="invoke_status" jdbcType="TINYINT"/>
+        <result property="maxRetryCount" column="max_retry_count" jdbcType="INTEGER"/>
+        <result property="retryCount" column="retry_count" jdbcType="INTEGER"/>
+        <result property="nextRetryTime" column="next_retry_time" jdbcType="TIMESTAMP"/>
+        <result property="failReason" column="fail_reason" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,snapshot_param,invoke_status,
+        max_retry_count,retry_count,next_retry_time,
+        fail_reason,create_time,update_time
+    </sql>
+</mapper>

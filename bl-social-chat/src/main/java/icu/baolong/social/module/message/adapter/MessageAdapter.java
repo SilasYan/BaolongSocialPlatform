@@ -10,10 +10,10 @@ import icu.baolong.social.repository.message.entity.Message;
  */
 public class MessageAdapter {
 
-	public static Message buildMessage(Long userId, MessageReq messageReq) {
+	public static Message buildMessage(Long senderId, MessageReq messageReq) {
 		return new Message()
-				.setSenderId(userId)
+				.setSenderId(senderId)
 				.setRoomId(messageReq.getRoomId())
-				.setMsgType(messageReq.getMsgType());
+				.setMessageType(messageReq.getMessageType());
 	}
 }

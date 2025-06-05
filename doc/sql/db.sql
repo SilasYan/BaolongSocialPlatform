@@ -23,6 +23,7 @@ CREATE TABLE user
     ip_info            JSON                NULL     DEFAULT NULL COMMENT 'IP信息',
     first_login_time   DATETIME            NULL     DEFAULT NULL COMMENT '首次登录时间',
     last_login_time    DATETIME            NULL     DEFAULT NULL COMMENT '最后登录时间',
+    last_online_time   DATETIME            NULL     DEFAULT NULL COMMENT '最后上线时间',
     check_in_days      INT                 NOT NULL DEFAULT 0 COMMENT '连续签到天数',
     last_check_in_time DATETIME            NULL     DEFAULT NULL COMMENT '最后签到时间',
     is_disabled        TINYINT(4)          NOT NULL DEFAULT 0 COMMENT '是否禁用（0-正常, 1-禁用）',
@@ -313,6 +314,10 @@ CREATE TABLE room
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_unicode_ci COMMENT = '房间表'
   ROW_FORMAT = DYNAMIC;
+# 房间表初始数据
+INSERT INTO room (id, room_type, show_type)
+VALUES (1, 1, 1);
+
 
 # 单聊房间表
 DROP TABLE IF EXISTS room_single;
@@ -358,6 +363,9 @@ CREATE TABLE room_group
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_unicode_ci COMMENT = '群聊房间表'
   ROW_FORMAT = DYNAMIC;
+INSERT INTO room_group (id, room_id, leader_id, group_name, group_avatar)
+VALUES (1, 1, 1, '暴龙社交平台全员群', '封面');
+
 
 # 群聊成员表
 DROP TABLE IF EXISTS room_group_member;
@@ -404,17 +412,17 @@ CREATE TABLE room_contact
 DROP TABLE IF EXISTS message;
 CREATE TABLE message
 (
-    id          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '消息ID',
-    room_id     BIGINT(20)          NOT NULL COMMENT '房间ID',
-    sender_id   BIGINT(20)          NOT NULL COMMENT '发送者ID',
-    msg_type    TINYINT             NOT NULL DEFAULT 0 COMMENT '消息类型（0-正常文本、1-撤回消息）',
-    content     VARCHAR(1024)       NULL     DEFAULT NULL COMMENT '消息内容',
-    reply_id    BIGINT(20)          NULL     DEFAULT NULL COMMENT '回复的消息ID',
-    reply_gap   INT(11)             NULL     DEFAULT NULL COMMENT '与回复的消息间隔多少条',
-    msg_status  TINYINT             NOT NULL DEFAULT 0 COMMENT '消息状态（0-正常、1-删除）',
-    extend_info JSON                NULL     DEFAULT NULL COMMENT '扩展信息',
-    create_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    update_time DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    id             BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '消息ID',
+    room_id        BIGINT(20)          NOT NULL COMMENT '房间ID',
+    sender_id      BIGINT(20)          NOT NULL COMMENT '发送者ID',
+    message_type   TINYINT             NOT NULL DEFAULT 0 COMMENT '消息类型消息类型（1-正常文本、2-撤回消息、3-表情、4-图片、5-视频、6-语音、7-文件、8-系统）',
+    content        VARCHAR(1024)       NULL     DEFAULT NULL COMMENT '消息内容',
+    reply_id       BIGINT(20)          NULL     DEFAULT NULL COMMENT '回复的消息ID',
+    reply_gap      INT(11)             NULL     DEFAULT NULL COMMENT '与回复的消息间隔多少条',
+    message_status TINYINT             NOT NULL DEFAULT 0 COMMENT '消息状态（0-正常、1-删除）',
+    extend_info    JSON                NULL     DEFAULT NULL COMMENT '扩展信息',
+    create_time    DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time    DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (id) USING BTREE,
     INDEX idx_room_id (room_id) USING BTREE,
     INDEX idx_sender_id (sender_id) USING BTREE,
@@ -469,4 +477,25 @@ CREATE TABLE user_apply
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_unicode_ci COMMENT = '用户申请表'
+  ROW_FORMAT = DYNAMIC;
+
+
+# 消息调用记录（存放所有未执行的消息）
+DROP TABLE IF EXISTS message_invoke_record;
+CREATE TABLE message_invoke_record
+(
+    id              BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    snapshot_param  JSON                NOT NULL COMMENT '快照参数（JSON格式）',
+    invoke_status   TINYINT             NULL     DEFAULT 0 COMMENT '执行状态（1-待执行、2-已失败）',
+    max_retry_count INT                 NOT NULL COMMENT '最大重试次数',
+    retry_count     INT                 NOT NULL COMMENT '已经重试次数',
+    next_retry_time DATETIME            NOT NULL COMMENT '下一次重试时间',
+    fail_reason     TEXT                NULL     DEFAULT NULL COMMENT '执行失败的堆栈信息',
+    create_time     DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time     DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    KEY idx_next_retry_time (next_retry_time) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = '消息调用记录（存放所有未执行的消息）'
   ROW_FORMAT = DYNAMIC;
